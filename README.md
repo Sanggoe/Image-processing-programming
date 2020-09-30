@@ -1,2 +1,2 @@
 # Image-processing-programming
-Image-processing-programming for univ. class
+Image-processing-programming with python for univ. class

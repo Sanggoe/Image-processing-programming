@@ -2,11 +2,11 @@
 
 Image-processing-programming with python for univ. class
 
-* [1주차 수업](./200901 1주차 파이썬 연습1.ipynb)
-* [2주차 수업](./200908 2주차 파이썬 연습2.ipynb)
-* [3주차 수업](./200915 3주차 - 4주차 Numpy 연습.ipynb)
-* [4주차 수업](./200922 4주차 - Matplotlib 연습.ipynb)
-* [5주차 수업](./200929 5주차 .ipynb)
+* [1주차 수업](200901 1주차 파이썬 연습1.ipynb)
+* [2주차 수업](200908 2주차 파이썬 연습2.ipynb)
+* [3주차 수업](200915 3주차 - 4주차 Numpy 연습.ipynb)
+* [4주차 수업](200922 4주차 - Matplotlib 연습.ipynb)
+* [5주차 수업](200929 5주차 .ipynb)
 
 <br/>
 

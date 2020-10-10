@@ -2,21 +2,13 @@
 
 Image-processing-programming with python for univ. class
 
-* [1주차 수업](/200901 1주차 파이썬 연습1.ipynb)
-* [2주차 수업](/200908 2주차 파이썬 연습2.ipynb)
-* [3주차 수업](/200915 3주차 - 4주차 Numpy 연습.ipynb)
-* [4주차 수업](200922 4주차 - Matplotlib 연습.ipynb)
-* [5주차 수업](./200929 5주차 .ipynb)
-
 <br/>
-
-<br/>
-
-# 영상처리 프로그래밍
 
 <br/>
 
 ## 개발 환경 및 파이썬 문법 소개
+
+<br/>
 
 ### jupyter 단축키
 
@@ -1147,43 +1139,1038 @@ plt.show()
 
 ### 1. 이미지와 비디오 입력
 
+#### 이미지 읽기
+
+* img = **cv2.imread**(file_name [, mode_flag]) : 파일로부터 이미지 읽기
+  * file_name : 이미지 경로 문자열
+  * mode_flag = cv2.IMREAD_COLOR : 읽기 모드 지정
+    * cv2.IMREAD_COLOR : 색상(BGR) 스케일로 읽기, default
+    * cv2.IMREAD_UNCHANGED : 파일 그대로 읽기
+    * cv2.IMREAD_GRAYSCALE : 흑백 스케일로 읽기
+  * img : 읽은 이미지, NumPy 배열
+  * cv2.imshow(title, img): 이미지를 화면에 표시
+  * title : 창 제목, 문자열
+* key = **cv2.waitKey**([delay]) : 키보드 입력 대기
+  * delay=0 : 키보드 입력 대기할 시간(ms), 0: 무한대(default)
+  * key : 사용자가 입력한 값, 정수
+    * -1 : 대기 시간동안 입력값 없음
+
+<br/>
+
+* 이미지를 회색으로 읽어 출력하고, 아무 키나 누르면 창을 닫는 코드
+
 ```python
 import cv2
 img_file = 'img/jiheon.jpg'
-img = cv2.imread(img_file, cv2.IMREAD_GRAYSCALE) # 이미지 파일이 폴더 안에 없으면 아마 에러날거야!
-# Gray image 로 읽는것!
+img = cv2.imread(img_file, cv2.IMREAD_GRAYSCALE) # 이미지 파일이 없으면 에러 발생. 따라서 예외처리! # Gray image 로 읽는것!
 if img is not None:
     cv2.imshow('IMG', img)
-    cv2.waitKey(0) # milisec 단위 시간만큼 기다림. 0은 무한..
+    cv2.waitKey(0) # milisec 단위 시간만큼 키 입력을 기다림. 0은 무한.
 #    cv2.destroyAllWindows # 현재 상태에서 열린 모든 윈도우를 닫아준다.
+    cv2.destroyWindow('IMG') # 해당 이름의 윈도우를 닫는다
+else:
+    print('No image file.')
+```
+
+<br/>
+
+#### 이미지 저장하기
+
+* **cv2.imwrite**(file_path, img) : 이미지를 파일에 저장
+  * file_path : 저장할 파일 경로 이름, 문자열
+  * img : 저장할 영상, NumPy 배열
+
+<br/>
+
+* 위 코드에, 해당 사진을 저장하는 코드를 추가
+
+```python
+import cv2
+img_file = 'img/jiheon.jpg'
+save_file = 'img/jeheon_gray.jpg' # 저장할 경로 및 이름
+img = cv2.imread(img_file, cv2.IMREAD_GRAYSCALE)
+if img is not None:
+    cv2.imshow('IMG', img)
+    cv2.imwrite(save_file, img) # save_file 문자열 경로에 저장한다.
+    cv2.waitKey(0)
     cv2.destroyWindow('IMG')
 else:
     print('No image file.')
 ```
 
+<br/>
+
+#### 동영상 및 카메라 프레임 읽기
+
+* cap = **cv2.VideoCapture**(file_path or index) : 비디오 캡처 객체 생성자
+  * file_path : 동영상 파일 경로
+  * index : 카메라 장치 번호, 0부터 순차적으로 증가
+  * cap : VideoCapture 객체
+* ret = **cap.isOpened**() : 객체 초기화 확인
+  * ret : 초기화 여부, True / False
+* ret, img = **cap.read**() : 영상 프레임 읽기
+  * ret : 프레임 읽기 성공 실패 여부, True / False
+  * img : 프레임 이미지, NumPy 배열 또는 None
+* **cap.set**(id, value) : 프로퍼티 변경
+* **cap.get**(id) : 프로퍼티 확인
+* **cap.release**() : 캡처 자원 반납
+
+<br/>
+
+#### 카메라(웹캠) 프레임 읽기
+
+```python
+import cv2
+
+cap = cv2.VideoCapture(0) # 0번 카메라 장치 연결
+if cap.isOpened():
+    while True:
+        ret, img = cap.read() # 카메라 프레임 읽기
+        if ret: # 성공적으로 읽어왔으면
+            cv2.imshow('camera', img) # 프레임 이미지 표시
+            if cv2.waitKey(1) != -1: # 1ms 대기하면서 아무키나 눌린 경우 중지
+                break
+        else:
+            print('no frame')
+            break
+else:
+    print("can't opne camera.")
+cap.release()
+cv2.destroyAllWindows()
+```
+
+<br/>
+
+#### 카메라 비디오 속성 제어
+
+* 속성 ID: 'cv2.CAP_PROP_' 로 시작하는 상수
+  * CAP_PROP_FRAME_WIDTH: 프레임 폭
+  * CAP_PROP_FRAME_HEIGHT: 프레임 높이
+  * **CAP_PROP_FPS: 초당 프레임의 수**
+  * CAP_PROP_POS_MSEC: 동영상 파일의 프레임 위치(ms)
+  * CAP_PROP_POS_AVI_RATIO: 동영상 파일의 상대 위치(0: 시작, 1: 끝)
+  * CAP_PROP_POS_FOURCC: 동영상 파일 코덱 문자
+  * CAP_PROP_POS_AUTOFOCUS: 카메라 자동 초점 조절
+  * CAP_PROP_ZOOM: 카메라 줌
+* 각 항목들을 확인할 때는 `get`, 변경할 때는 `set`을 통해 할 수 있습니다.
+
+<br/>
+
+* 비디오 파일을 읽어 FPS를 지정하여 동영상 재생
+  * 디지털 영상은 스틸 이미지를 연속해서 보여주는것! 주로 초당 30 Frame.
+
+```python
+import cv2
+
+video_file = "img/meat.mp4"
+
+cap = cv2.VideoCapture(video_file) # 동영상 캡처 객체 생성
+if cap.isOpened():  # video가 비어있는지, 존재 하는지 체크 (예외처리)
+    fps = cap.get(cv2.CAP_PROP_FPS) # 프레임 수 구하기
+    delay = int(1000/fps) # delay 시간 구하는 공식 1000ms/fps
+    while True:
+        ret, img = cap.read() # 읽는거
+        
+        if ret:
+            cv2.imshow(video_file, img) # 매 순간 이미지를 
+            cv2.waitKey(delay)          # 초당 뿌리는 것
+        else:
+            break
+    cv2.destroyAllWindows()
+else:
+    print('No video file.')
+```
+
+<br/>
+
+* 카메라 프레임 크기 설정 예제
+
+```python
+# 카메라 프레임 크기 설정
+import cv2
+
+cap = cv2.VideoCapture(0)
+width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+print("Original width: %d, height: %d" % (width, height))
+
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 320)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 240)
+width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+print("Resized width: %d, height: %d" % (width, height))
+
+if cap.isOpened():
+    while True:
+        ret, img = cap.read()
+        if ret:
+            cv2.imshow('camera', img)
+            if cv2.waitKey(1) != -1:
+                break
+        else:
+            print('no frame!')
+            break
+else:
+    print("can't open camera!")
+cap.release()
+cv2.destroyAllWindows()
+```
+
+<br/>
+
+#### 비디오 파일 프레임으로 저장하기
+
+* 비디오 파일을 프레임으로 저장하는 코드
+  * 캡처를 하거나 디지털 카메라로 사진 찍는 것과 같다!
+  * 이미지 저장하기의 **cv2.imwrite**() 함수를 그대로 사용하면 된다.
+
+```python
+import cv2
+
+video_file = "img/meat.mp4"
+cap = cv2.VideoCapture(video_file) # 0으로 넣으면 카메라 녹화 화면..
+
+if cap.isOpened():  # video가 비어있는지, 존재 하는지 체크 (예외처리)
+    fps = cap.get(cv2.CAP_PROP_FPS) # 프레임 가져오기
+    delay = int(1000/fps)
+    while True:
+        ret, img = cap.read() # 읽는거
+        if ret:
+            cv2.imshow(video_file, img) # 매 순간 이미지를 출력
+            if cv2.waitKey(delay) != -1: # 뭔가 입력을 받으면
+                cv2.imwrite('img/photo.jpg', img) # 저장
+                break # 저장 되자마자 종료
+        else:
+            break
+    cv2.destroyAllWindows() # 모든 열린 창 닫기
+else:
+    print('No video file.')
+```
+
+<br/>
+
+#### 비디오 파일 영상으로 저장하기
+
+* writer = **cv2.VideoWriter**(file_path, fourcc, fps, (width, height)) : 비디오 저장 클래스 생성자 함수
+  * file_path: 비디오 파일 저장 경로
+  * fourcc: 비디오 인코딩 형식 4글자
+  * fps: 초당 프레임 수
+  * (width, height): 프레임 폭과 높이
+  * writer: 생성된 비디오 저장 객체
+* **writer.write**(frame): 프레임 저장
+  * frame: 저장할 프레임, NumPy 배열
+* **writer.set**(id, value): 프로퍼티 변경
+* **writer.get**(id): 프로퍼티 확인
+* ret = writer.fourcc(c1, c2, c3, c4): fourcc 코드 생성
+  * c1, c2, c3, c4: 인코딩 형식 4글자, 'MJPG', 'DIVX' 등
+  * ret: fourcc 코드
+* cv2.VideoWriter_fourcc(c1, c2, c3, c4): cv2.VideoWriter.fourcc()와 동일
+
+<br/>
+
+* 키보드 입력하기 전까지의 영상을 저장하는 코드
+
+```python
+# 카메라로 녹화하기
+import cv2
+
+# video_file = "img/meat.mp4"
+cap = cv2.VideoCapture(0) # video_file를 넣으면 해당 비디오 파일에 대해 수행 
+if cap.isOpened():
+    file_path = './record.mp4'
+    fps = 25.40
+    fourcc = cv2.VideoWriter_fourcc(*'DIVX')
+    width = cap.get(cv2.CAP_PROP_FRAME_WIDTH)
+    height = cap.get(cv2.CAP_PROP_FRAME_HEIGHT)
+    size = (int(width), int(height))
+    out = cv2.VideoWriter(file_path, fourcc, fps, size)
+    while True:
+        ret, frame = cap.read()
+        if ret:
+            cv2.imshow('camera-recording',frame)
+            out.write(frame)
+            if cv2.waitKey(int(1000/fps)) != -1:
+                break
+        else:
+            print("no frame!")
+            break
+    out.release()
+else:
+    print("Can't open camera!")
+cap.release()
+cv2.destroyAllWindows()
+```
+
+<br/>
+
+### 2. openCV 그리기
+
+* openCV로 그리려면, 그림판 역할의 빈 NumPy 배열 이미지가 필요하다.
+
+```python
+import numpy as np
+import cv2
+
+img = np.full((500,500,3), 255, dtype=np.uint8)
+cv2.imwrite('img/blank_500.jpg', img)
+```
+
+<br/>
+
+#### 직선 그리기
+* **cv2.line**(img, start, end, color [, thickness, linetype])
+    * img: 그림 그릴 대상 이미지, Numpy 배열
+    * start: 선 시작 지점 좌표(x,y)
+    * end: 선 끝 지점 좌표(x,y)
+    * color: (Blue, Green, Red), 0~255 # openCV는 BGR 순서다!
+    * thickness=1:선 두께
+    * lineType:선 그리기 형식
+        * cv2.LINE_4:4 연결 선 알고리즘
+        * cv2.LINE_8:8 연결 선 알고리즘
+        * cv2.LINE_AA: 안티에일리어싱(anti-aliasing, 계단 현상 없는 선)
+
+<br/>
+
+* 다양한 직선을 그리는 예제
+
+```python
+import cv2
+
+img = cv2.imread('./img/blank_500.jpg')
+
+# (x,y 이므로) x축 즉, 가로로 100 길이의 (BGR 순서) Blue색 직선
+cv2.line(img, (50,50), (150,50), (255,0,0)) 
+cv2.line(img, (200,50), (300,50), (0,255,0))
+cv2.line(img, (350,50), (450,50), (0,0,255))
+
+# 마지막 인자: 두께
+cv2.line(img, (100,100), (400,100), (255,255,0), 10)
+cv2.line(img, (100,150), (400,150), (255,0,255), 10)
+cv2.line(img, (100,200), (400,200), (0,255,255), 10)
+cv2.line(img, (100,250), (400,250), (200,200,200), 10)
+cv2.line(img, (100,300), (400,300), (0,0,0), 10)
+
+# 마지막 인자: 선 그리기 형식
+cv2.line(img, (100,350), (400,400), (0,0,255), 20, cv2.LINE_4)
+cv2.line(img, (100,400), (400,450), (0,0,255), 20, cv2.LINE_8)
+cv2.line(img, (100,450), (400,500), (0,0,255), 20, cv2.LINE_AA)
+
+cv2.imshow('lines', img) 
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+```
+
+* 결과
+
+![image-20200930142325154](./img/image-20200930142325154.png)
+
+<br/>
+
+#### 사각형그리기
+* **cv2.rectangle**(img, start, end, color [, thickness, linetype])
+    * img: 그림 그릴 대상 이미지, Numpy 배열
+    * start: 사각형 시작 꼭지점(x,y)
+    * end: 사각형 끝 꼭지점(x,y)
+    * color: 색상(Blue, Green, Red)
+    * thickness: 선 두께
+        - -1: 채우기
+    * lineType: 선타입, cv2.line()과 동일
+
+<br/>
+
+* 다양한 사각형을 그리는 예제
+
+```python
+import cv2
+
+img = cv2.imread('./img/blank_500.jpg')
+
+cv2.rectangle(img, (50,50), (150,150), (255,0,0)) # 채우기 없음
+cv2.rectangle(img, (300,300), (100,100), (0,255,0), 10) # 선 두께 10
+cv2.rectangle(img, (450,200), (200,450), (0,0,255), -1) # -1은 채워 그리기
+
+cv2.imshow('rectangle', img) 
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+```
+
+* 결과
+
+![image-20200930142757160](./img/image-20200930142757160.png)
+
+<br/>
+
+#### 다각형 그리기
+* **cv2.polylines**(img, points, isClosed, color [, thickness, linetype])
+    * img: 그림 그릴 대상 이미지
+    * points: 꼭지점 좌표, NumPy 배열 리스트
+    * isClosed: 닫힌 도형 여부, True/False - 처음과 마지막 좌표를 잇는다
+    * color: 색상(Blue, Green, Red)
+    * thickness: 선 두께
+    * lineType: 선타입, cv2.line()과 동일
+
+<br/>
+
+* 다양한  다각형을 그리는 예제
+
+```python
+import cv2
+
+img = cv2.imread('./img/blank_500.jpg')
+
+pts1 = np.array([[50,50],[150,150],[100,140],[200,240]], dtype=np.int32) # 번개모양
+pts2 = np.array([[350,50],[250,200],[450,200]], dtype=np.int32) # 삼각형
+pts3 = np.array([[150,300],[50,450],[250,450]], dtype=np.int32) # 삼각형
+pts4 = np.array([[350,250],[450,350],[400,450],[300,450],[250,350]], dtype=np.int32) # 오각형
+
+cv2.polylines(img, [pts1], False, (255,0,0)) # 열린 파란색 번개모양 다각형 그리기
+cv2.polylines(img, [pts2], False, (0,0,0), 10) # 열린 검정색 두께 10의 삼각형 그리기
+cv2.polylines(img, [pts3], True, (0,0,255), 10) # 닫힌 빨간색 두께 10의 삼각형 그리기
+cv2.polylines(img, [pts4], True, (0,0,0)) # 닫힌 오각형 그리기
+
+cv2.imshow('polyline', img) 
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+```
+
+* 결과
+
+![image-20200930143530569](./img/image-20200930143530569.png)
+
+<br/>
+
+#### 2.2.4 원, 타원, 호 그리기
+* **cv2.circle**(img, center, radius, color [, thickness, linetype])
+    * img: 그림 그릴 대상 이미지
+    * center: 원점 좌표(x,y)
+    * color: 색상(Blue, Green, Red)
+    * thickness=1: 선 두께
+        -1: 채우기
+    * lineType: 선타입, cv2.line()과 동일
+* **cv2.ellipse**(img, center, axes, angle, from, to, color [, thickness, linetype])
+    * img: 그림 그릴 대상 이미지
+    * center: 원점 좌표(x,y)
+    * axes: 기준 축 길이(가로, 세로)
+    * angle: 기준 축 회전 각도
+    * from, to: 호를 그릴 시작 각도와 끝 각도
+    * color: (Blue, Green, Red), 0~255 # openCV는 BGR 순서다!
+    * thickness: 선 두께
+    * lineType: 선타입, cv2.line()과 동일
+
+<br/>
+
+* 다양한 원 종류를 그리는 예제
+
+```python
+import cv2
+
+img = cv2.imread('img/blank_500.jpg')
+
+cv2.circle(img, (150,150), 100, (255,0,0)) # 반지름이 100인 파란색 원
+cv2.circle(img, (300,150), 70, (0,255,0), 5) # 두께 5, 반지름이 70인 초록색 원
+cv2.circle(img, (400,150), 50, (0,0,255), -1) # 반지름이 50인 빨간색 채운 원
+
+cv2.ellipse(img, (50,300), (50,50), 0, 0, 360, (0,0,255)) # 타원
+cv2.ellipse(img, (150,300), (50,50), 0, 0, 180, (255,0,0)) # 아래 반원
+cv2.ellipse(img, (200,300), (50,50), 0, 181, 360, (0,0,255)) # 위 반원
+
+cv2.ellipse(img, (325,300), (75,50), 0, 0, 360, (0,255,0)) # 납작 타원
+cv2.ellipse(img, (450,300), (50,75), 0, 0, 360, (255,0,255)) # 홀쭉 타원
+
+cv2.ellipse(img, (50,425), (50,75), 15, 0, 360, (0,0,0)) # 회전 타원
+cv2.ellipse(img, (200,425), (50,75), 45, 0, 360, (0,0,0)) # 회전 타원
+
+cv2.ellipse(img, (350,425), (50,75), 45, 0, 180, (0,0,255)) # 회전 반원
+cv2.ellipse(img, (400,425), (50,75), 45, 181, 360, (255,0,0)) # 회전 타원
+
+cv2.imshow('polyline', img) 
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+```
+
+* 결과
+
+![image-20200930144412832](./img/image-20200930144412832.png)
+
+<br/>
+
+#### 글씨 그리기
+* **cv2.putText**(img, text, point, fontFace, fontSize, color [, thickness, lineType])
+    * img: 그림 그릴 대상 이미지
+    * text: 표시할 문자열
+    * point: 글씨를 표시할 좌표(좌측 하단 기준)(x,y)
+    * fontFace: 글꼴
+        * cv2.FONT_HERSHEY_PLAIN: 산세리프체 작은 글꼴
+        * cv2.FONT_HERSHEY_SIMPLEX: 산세리프체 일반 글꼴
+        * cv2.FONT_HERSHEY_DUPLEX: 산세리프체 진한 글꼴
+        * cv2.FONT_HERSHEY_COMPLEX_SMALL: 세리프체 작은글꼴
+        * cv2.FONT_HERSHEY_COMPLEX: 세리프체 일반 글꼴
+        * cv2.FONT_HERSHEY_TRIPLEX: 세리프체 진한 글꼴
+        * cv2.FONT_HERSHEY_SCRIPT_SIMPLEX: 필기체 산세리프 글꼴
+        * cv2.FONT_HERSHEY_SCRIPT_COMPLEX: 필기체 세리프 글꼴
+        * cv2.FONT_ITALIC: 이탤릭체 플래그
+    * fontSize: 글꼴 크기
+    * color, thickness, lineType: cv2.rectangle()과 동일
+
+<br/>
+
+* 다양한 글자를 그리는 예제
+
+```python
+import cv2
+
+img = cv2.imread('./img/blank_500.jpg')
+
+cv2.putText(img, "Plain", (50,30), cv2.FONT_HERSHEY_PLAIN, 1, (0,0,0))
+cv2.putText(img, "Simplex", (50,70), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,0))
+cv2.putText(img, "Duplex", (50,110), cv2.FONT_HERSHEY_DUPLEX, 1, (0,0,0))
+cv2.putText(img, "Simplex", (200,110), cv2.FONT_HERSHEY_SIMPLEX, 2, (0,0,250))
+
+cv2.putText(img, "Complex Small", (50,180), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0,0,0))
+cv2.putText(img, "Complex", (50,220), cv2.FONT_HERSHEY_COMPLEX, 1, (0,0,0))
+cv2.putText(img, "Triplex", (50,260), cv2.FONT_HERSHEY_TRIPLEX, 1, (0,0,0))
+cv2.putText(img, "Complex", (200,260), cv2.FONT_HERSHEY_TRIPLEX, 2, (0,0,255))
+
+cv2.putText(img, "Script Simplex", (50,330), cv2.FONT_HERSHEY_SCRIPT_SIMPLEX, 1, (0,0,0))
+cv2.putText(img, "Script Complex", (50,370), cv2.FONT_HERSHEY_SCRIPT_COMPLEX, 1, (0,0,0))
+
+cv2.putText(img, "Plain Italic", (50,430), cv2.FONT_ITALIC, 1, (0,0,0))
+cv2.putText(img, "Complex Italic", (50,30), cv2.FONT_ITALIC, 1, (0,0,0))
+
+cv2.imshow('draw text', img)
+cv2.waitKey()
+cv2.destroyWindow('draw text')
+```
+
+* 결과
+
+![image-20200930150345298](./img/image-20200930150345298.png)
+
+* 뭐지? 이태릭 글씨체가 안나온다.
+
+<br/>
+
+### 실습 과제1) 배운것들 한 페이지에 다 출력
+
+* 실습 코드
+
+```python
+import numpy as np
+import cv2
+
+# openCV로 그리려면, 그림판 역할의 빈 NumPy 배열 이미지가 필요하다.
+img = np.full((500,500,3), 255, dtype=np.uint8) # 500*500크기의 컬러를 저장할 빈 numpy 배열 선언
+cv2.imwrite('img/blank_500.jpg', img) # 저장
+
+img = cv2.imread('./img/blank_500.jpg')
+
+# lines (x,y 이므로) x축 즉, 가로로 100 길이의 (BGR 순서) Blue색 직선
+cv2.putText(img, "Lines", (30,20), cv2.FONT_ITALIC, 0.5, (0,0,0))
+cv2.line(img, (50,30), (150,30), (255,0,0)) 
+cv2.line(img, (200,30), (300,30), (0,255,0))
+cv2.line(img, (350,30), (450,30), (0,0,255))
+
+# rectanglues
+cv2.putText(img, "Rectanglue", (30,60), cv2.FONT_HERSHEY_PLAIN, 1, (255,0,255))
+cv2.rectangle(img, (80,70), (120,110), (255,0,0)) # 채우기 없음
+cv2.rectangle(img, (230,70), (270,110), (0,255,0), 10) # 선 두께 10
+cv2.rectangle(img, (380,70), (420,110), (0,0,255), -1) # -1은 채워 그리기
+
+# Polylines
+cv2.putText(img, "Polyline", (30,150), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0,210,210))
+pts1 = np.array([[25,160],[70,200],[50,200],[95,240]], dtype=np.int32) # 번개모양
+pts2 = np.array([[165,160],[115,240],[215,240]], dtype=np.int32) # 삼각형
+pts3 = np.array([[290,160],[240,240],[340,240]], dtype=np.int32) # 삼각형
+pts4 = np.array([[405,150],[455,200],[430,250],[380,250],[355,200]], dtype=np.int32) # 오각형
+
+cv2.polylines(img, [pts1], False, (255,0,0)) # 열린 파란색 번개모양 다각형 그리기
+cv2.polylines(img, [pts2], False, (0,0,0), 10) # 열린 검정색 두께 10의 삼각형 그리기
+cv2.polylines(img, [pts3], True, (0,0,255), 10) # 닫힌 빨간색 두께 10의 삼각형 그리기
+cv2.polylines(img, [pts4], True, (0,0,0)) # 닫힌 오각형 그리기
+
+# Circle
+cv2.putText(img, "Circle", (30,280), cv2.FONT_HERSHEY_SCRIPT_COMPLEX, 1, (255,0,0))
+cv2.circle(img, (50,340), 50, (255,0,0)) # 반지름이 50인 파란색 원
+cv2.circle(img, (50,410), 40, (0,255,0), 5) # 두께 5, 반지름이 40인 초록색 원
+cv2.circle(img, (50,450), 30, (0,0,255), -1) # 반지름이 30인 빨간색 채운 원
+
+cv2.ellipse(img, (150,340), (50,50), 0, 0, 180, (255,0,0)) # 아래 반원
+cv2.ellipse(img, (200,340), (50,50), 0, 181, 360, (0,0,255)) # 위 반원
+
+cv2.ellipse(img, (325,340), (75,50), 0, 0, 360, (0,255,0)) # 납작 타원
+cv2.ellipse(img, (450,340), (50,75), 0, 0, 360, (255,0,255)) # 홀쭉 타원
+
+cv2.ellipse(img, (190,445), (40,60), 50, 0, 360, (0,0,0)) # 회전 타원
+
+cv2.ellipse(img, (310,445), (40,60), 45, 0, 180, (0,0,255)) # 회전 반원
+cv2.ellipse(img, (350,445), (40,60), 45, 181, 360, (255,0,0)) # 회전 타원
 
 
+cv2.imshow('draw', img) 
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+```
+
+* 출력 결과
+
+![image-20200930155805038](./img/image-20200930155805038.png)
+
+<br/>
+
+### 3. Numpy 배열로 이미지 생성
+
+<br/>
+
+#### 흑백 이미지 만들기
+
+흑백(grayscale) 이미지는 2차원 배열로 만들 수 있다.  **0,1번 축은 (y,x)좌표 값이 저장되고** 2차원의 한 점은 0~255의 정수값을 가진다.
+
+* Numpy로 원하는 가로, 세로 크기만큼의 배열을 만들되, 초기값으로 0을 넣어준다. (np.zeros())
+* 원하는 좌표에 값을 할당하면 그 값 만큼의 밝기를 가진 점으로 바뀐다.
+* 막대 모양의 선을 그려주기 위해 슬라이싱 기능을 사용한다.
+    * img[25:35, :] = 45
+        * 0번축(height - y축)의 25~34번째,
+        * 1번축(width - x축)의 모든 위치
+        * 어두운 회색(45)
+        * 10 픽셀 두께의 어두운 가로막대가 위에서 26번째 픽셀 위치에 만들어진다.
+    * img[:, 35:45] = 205
+        * 10 픽셀 두께의 밝은 세로막대가 왼쪽에서 36번째 픽셀 위치에 만들어진다.
+* 화면에 보여주기 위해 OpenCV의 imshow() 함수를 사용한다
+
+<br/>
+
+* 예제 코드
+
+```python
+import cv2
+import numpy as np
+
+img = np.zeros( (120, 120), dtype=np.uint8)
+img[25:35, :] = 45
+img[55:65, :] = 115
+img[85:95, :] = 160
+img[:, 35:45] = 205
+img[:, 75:85] = 255
+
+cv2.imshow('Gray', img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+```
+
+* 결과
+
+![image-20201004190707371](./img/image-20201004190707371.png)
+
+<br/>
+
+#### 컬러 이미지 만들기
+컬러 이미지는 3차원 배열로 만들 수 있다. **0,1번 축은 (y,x)좌표 값이 저장되고**, 2번축은 RGB 컬러값이 저장된다.
+
+* Numpy로 원하는 가로, 세로 크기만큼의 배열을 만들되, 초기값으로 0을 넣어준다.(np.zeros())
+* 2번 축은 RGB 컬러이므로 크기는 항상 3이다.
+* 0,1번축의 원하는 좌표에 3개의 컬러값을 가진 리스트를 할당하면 그 값의 컬러를 가진 점으로 바뀐다.
+* 막대 모양의 선을 그려주기 위해 슬라이싱 기능을 사용한다.
+    * img[25:35, :] = [255, 0, 0]
+        * 0번축(height)의 25~34번째,
+        * 1번축(width)의 모든 위치
+        * 밝은 파란색(255,0,0): OpenCV로 보여주기 때문에 BGR 순서가 된다
+        * 10 픽셀 두께의 파란 가로막대가 위에서 26번째 픽셀 위치에 만들어진다.
+    * img[:, 35:45] = [255, 255, 0]
+        * 10 픽셀 두께의 시안(cyon)색 세로막대가 왼쪽에서 36번째 픽셀 위치에 만들어진다.
+* 화면에 보여주기 위해 OpenCV의 imshow() 함수를 사용한다
+
+<br/>
+
+* 예제 코드
+
+```python
+import numpy as np
+import cv2
+
+img = np.zeros((120,120,3), dtype = np.uint8)
+img[25:35, :] = [255, 0, 0] # Blue x축의 범위, y축의 범위.
+img[55:65, :] = [0, 255, 0]
+img[85:95, :] = [0, 0, 255]
+img[:, 35:45] = [255, 255, 0]
+img[:, 75:85] = [0, 255, 255] # Red 곰곰히 생각하며 따라가보자\
+cv2.imshow('RGB', img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+```
+
+* 결과
+
+![image-20201004191113715](./img/image-20201004191113715.png)
+
+<br/>
+
+#### 사각형 그리기
+슬라이싱으로 0,1번축의 범위를 정해주고 값을 할당하면 사각형이 만들어진다.
+* img[25:35, 35:45] = [255,0,0]
+    * 한 변의 길이가 10픽셀인 파란색 정사각형이 (25,35) 위치에 만들어진다.
+
+<br/>
+
+* 예제 코드
+
+```python
+img = np.full((120,120,3), 255, dtype = np.uint8)
+img[25:45, 35:55] = [255, 255, 0] # Blue x축의 범위, y축의 범위.
+
+cv2.imshow('RGB', img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+```
+
+* 결과
+
+![image-20201004191403892](./img/image-20201004191403892.png)
+
+<br/>
+
+#### ** X자 그리기
+* for문을 이용하여 0번축의 인덱스 값을 1씩 증가시키고, 1번축의 인덱스는 일정 폭을 유지하면서 1씩 증가시키면, 대각선 방향의 막대를 그릴 수 있다.
+
+<br/>
+
+* 예제 코드
+
+```python
+import numpy as np
+import cv2
+
+img = np.full((120,120,3), 255, dtype = np.uint8)
+for i in range(10,110):
+    img[i, i-5:i+5] = [255, 0, 0]
+    img[i, 115-i:125-i] = [255, 0, 0]
+
+cv2.imshow('RGB', img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+```
+
+* 결과
+
+![image-20201004192655920](./img/image-20201004192655920.png)
+
+<br/>
+
+### 실습 과제2) Drawing Union Jack
+
+* 영국 국기인 Union Jack을 그리는 실습
+
+<br/>
+
+* 예제 코드
+
+```python
+import numpy as np
+import cv2
+
+img = np.full((120, 120, 3), 255, dtype=np.uint8)
+
+img[10:110, :] = [126, 34, 1] # 사각형
+for i in range(10, 110):
+    img[i, i-10:i+10] = [255, 255, 255] # x=-y 그래프 모양 하얀 선
+    img[i, i-5:i+5] = [0, 0, 255] # x=-y 그래프 모양 빨간 선
+    img[i, 110-i:130-i] = [255, 255, 255] # x=y 그래프 모양 하얀 선
+    img[i, 115-i:125-i] = [0, 0, 255] # x=y 그래프 모양 빨간 선
+    img[i, 50:70] = [255, 255, 255] # y 그래프 모양 하얀 선
+    
+for i in range(0, 120):
+    img[50:70, i] = [255, 255, 255] # x 그래프 모양 하얀 선
+    img[55:65, i] = [0, 0, 255] # x 그래프 모양 빨간 선
+
+for i in range(10, 110):
+    img[i, 55:65] = [0, 0, 255] # y 그래프 모양 빨간 선
+
+cv2.imshow('Union Jack', img)
+cv2.waitKey(0)
+cv2.destroyWindow('Union Jack')
+```
+
+* 결과
+
+![image-20201004205037521](./img/image-20201004205037521.png)
+
+<br/>
+
+### 2.3 창관리
+
+```python
+import cv2
+img = cv2.imread('img/jiheon.jpg')
+img_gray = cv2.imread('img/jiheon.jpg', cv2.IMREAD_GRAYSCALE)
+
+cv2.namedWindow('origin', cv2.WINDOW_AUTOSIZE) # 이미지에 맞추어 윈도우 크기 조잘
+cv2.namedWindow('gray', cv2.WINDOW_NORMAL) # 기본으로 주어지는 크기로 이미지 출력
+
+cv2.imshow('origin', img)
+cv2.imshow('gray', img_gray)
+
+cv2.moveWindow('origin', 0,0) # 좌측 상단
+cv2.moveWindow('gray', 100,100) # 100,100 위치로 이동
+cv2.waitKey(0) # pause와 같은 역할. key 입력 대기
+
+cv2.resizeWindow('origin', 300,400)
+cv2.resizeWindow('gray', 200,300)
+cv2.waitKey(0)
+
+cv2.destroyWindow('gray')
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+```
+
+<br/>
+
+### 2.4 이벤트 처리
+
+<br/>
+
+#### 2.4.1 키보드 이벤트
+
+```python
+# 상하좌우 키입력
+import cv2
+img = cv2.imread('img/jiheon.jpg')
+title = 'IMG'
+x, y = 100, 100
+
+while True:
+    cv2.imshow(title, img) # 이미지 보여주기
+    cv2.moveWindow(title, x, y) # 윈도우 창 옮기기
+    key = cv2.waitKey(0) & 0xFF
+    # 안전장치로 비트엔드 연산. 맨 마지막 값만 넘기는 것?
+    print(key, chr(key)) # chr은 해당 값을 알파벳으로 바꿔준다.
+    if key == ord('h'): # ord는 아스키 값으로 바꿔준다.
+        x-=10
+    elif key == ord('j'):
+        y-=10
+    elif key == ord('k'):
+        x+=10
+    elif key == ord('l'):
+        y+=10
+    elif key == ord('q') or key == 27: # q 또는 ESC 키
+        cv2.destroyAllWindows()
+        break
+```
+
+<br/>
+
+#### 2.4.2 마우스 이벤트
+마우스 컨트롤을 위해서는 콜백(callback) 함수를 사용해야 한다. 콜백 함수 동작에 대해서는 Python, C++, Java 언어 고급과정에서 다룬다. 이에 대한 지식이 없거나 부족한 학생은 해당 언어 교재를 참고하기 바란다.
+
+콜백 함수는 이벤트 기반 프로그래밍의 하나로, 이벤트에 따라 동작하는 함수를 미리 선언해두고 해당 이벤트가 발생할 때마다 함수가 실행되도록 하는 기법이다. 이렇게 하면 이벤트와 관련된 연동을 프로그램 흐름 상에서 관리할 필요가 없기 때문에 알고리즘을 구현하기 편리하다.
+
+```python
+# 마우스 이벤트
+import cv2
+
+title = 'mouse event'
+img = cv2.imread('img/blank_500.jpg')
+cv2.imshow(title, img)
 
 
+def onMouse(event, x, y, flags, param): # 마우스 콜백 함수
+    print(event, x, y)
+    if event == cv2.EVENT_LBUTTONDOWN: # 책 53p 해봐~
+        cv2.circle(img, (x,y), 30, (0,0,0), -1)
+        cv2.imshow(title, img)
+    
+cv2.setMouseCallback(title, onMouse) # 마우스 콜백 함수를 설정한다.
+
+while True:
+    if cv2.waitKey(0) & 0xFF == 27: # ESC 눌러야 빠져나온다
+        break
+        
+cv2.destroyAllWindows()
+```
+
+<br/>
+
+```python
+# 마우스 + 플래그 이벤트
+import cv2
+
+title = 'mouse event'
+img = cv2.imread('img/blank_500.jpg')
+cv2.imshow(title, img)
+
+colors = {'black': (0,0,0),
+         'red': (0,0,255),
+         'blue': (255,0,0),
+         'green': (0,255,0),}
+
+def onMouse(event, x, y, flags, param): # 마우스 콜백 함수
+    print(event, x, y, flags)
+    color = colors['black']
+    if event == cv2.EVENT_LBUTTONDOWN:
+        if flags & cv2.EVENT_FLAG_CTRLKEY and flags & cv2.EVENT_FLAG_SHIFTKEY:
+            color = colors['green']
+        elif flags & cv2.EVENT_FLAG_SHIFTKEY:
+            color = colors['blue']
+        elif flags & cv2.EVENT_FLAG_CTRLKEY:
+            color = colors['red']
+        cv2.circle(img, (x,y), 30, color, -1)
+        cv2.imshow(title, img)
+
+cv2.setMouseCallback(title, onMouse) # 마우스 콜백 함수를 설정한다.
+
+while True:
+    if cv2.waitKey(0) & 0xFF == 27: # ESC 눌러야 빠져나온다
+        break
+        
+cv2.destroyAllWindows()
+```
+
+<br/>
+
+<br/>
+
+## 4. 이미지 프로세싱 기초
+
+### 4.1 관심 영역(ROI)
+
+* ROI (Region of Interest)  # rectangle 형태를 이야기 함!!
+
+<br/>
+
+#### 4.1.1 관심영역 지정
+
+```python
+# 내 own 값 ㅋㅋㅋ
+import cv2
+import numpy as np
+
+img = cv2.imread('img/jiheon.jpg')
+x = 320; y = 150; w = 50; h = 50
+roi = img[y:y+h, x:x+w] # numpy는 copy가 아닌 referencing!!
+cv2.rectangle(roi, (0,0), (w-1, h-1), (0,255,0)) # BGR 순서
+img[y:y+h, x+w:x+w+w] = roi
+cv2.imshow('img', img)
+cv2.imwrite('img/jiheon_roi.jpg', roi)
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+```
+
+<br/>
+
+* 영역 지정하여 복사 붙여넣기
+
+```python
+# 영역 복사 붙여넣기
+import cv2
+import numpy as np
+
+img = cv2.imread('img/jiheon.jpg')
+x = 110; y = 100; w = 300; h = 300
+roi = img[y:y+h, x:x+w] # numpy는 copy가 아닌 referencing!!
+cv2.rectangle(roi, (0,0), (w-1, h-1), (0,255,0)) # BGR 순서
+cv2.imshow('img', img)
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+```
+
+<br/>
+
+#### 4.1.2 마우스로 관심영역 지정
+
+* 마우스 이벤트
+    * cv2.EVENT_LBUTTONDOWN : 누르기
+    * cv2.EVENT_LBUTTONUP : 떼기
+    * cv2.EVENT_MOUSEMOVE : 움직이기
+        * 드래그란, 누르고 유지하고 당기고 떼고!
+        * 윈도우는 마우스를 계~속 처리하고 있는거다.
+
+<br/>
+
+```python
+# 드래그 영역 네모 그리기
+import cv2
+import numpy as np
+
+isDragging = False # 눌린 상태 여부
+pos = (-1, -1) # x0, y0
+w, h = -1, -1 # init
 
 
+def onMouse(event, x, y, flags, param):
+     # global을 쓰면 local이 아닌 함수 바깥의 변수 사용
+    global isDragging, pos, w, h, img
+    if event == cv2.EVENT_LBUTTONDOWN:
+        isDragging = True
+        pos = (x,y)
+    elif event == cv2.EVENT_MOUSEMOVE:
+        if isDragging:
+            img_draw = img.copy() # 보통 처리할 때는 원본이 아닌 카피 후 진행
+            cv2.rectangle(img_draw, pos, (x,y), (255,0,0), 2)
+            cv2.imshow('img_draw', img_draw)
+    elif event == cv2.EVENT_LBUTTONUP:
+        if isDragging:
+            isDragging = False
+            w = x - pos[0]
+            h = y - pos[1]
+            if w > 0 and h > 0:
+                img_draw = img.copy()
+                cv2.rectangle(img_draw, pos, (x,y), (0,255,0), 2)
+                cv2.imshow('img_draw', img_draw)
+                roi = img[pos[1]:pos[1]+h, pos[0]:pos[0]+w]
+                cv2.imshow('cropped', roi)
+                cv2.imwrite('img/cropped.jpg', roi)
+            else:
+                cv2.imshow('img_draw', img)
 
+                
+img = cv2.imread('img/jiheon.jpg')
+cv2.imshow('img', img)
+cv2.setMouseCallback('img', onMouse)
 
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+```
 
+<br/>
 
+#### 하지만 openCV로 하면, 위 많은 것들을.. 알아서 다 해준다
 
+ret = cv2.**selectROI**([win_name,] img [, showCrossHair = True, fromCenter = False])
 
+* win_name: ROI 선택을 진행할 창의 이름, str
+* img: ROI 선택을 진행할 이미지, NumPy ndarray
+* showCrossHair: 선택 영역 중심에 십자모양 표시 여부
+* fromCenter: 마우스 클릭 시작지점을 영역의 중심으로 지정
+* ret: 선택한 영역 좌표와 크기(x,y,w,h), 선택을 취소한 경우 모두 0
+        
 
+영역 선택 후, 스페이스나 엔터키를 누르면 좌표와 크기값이 반환되고, 'c'키를 누르면 선택이 취소되고, 리턴값이 0이 된다.
 
+<br/>
 
+* 드래그 영역에 네모 그리기
 
+```python
+# 드래그 영역 네모 그리기
+import cv2
+import numpy as np
+               
+img = cv2.imread('img/jiheon.jpg')
+x,y,w,h = cv2.selectROI('img', img, False)
+if w and h:
+    roi = img[y:y+h, x:x+w]
+    cv2.imshow('cropped', roi)
+    cv2.imwrite('img/cropped2.jpg', roi)
+    
+cv2.imshow('img', img)
 
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+```
 
+<br/>
 
+<br/>
 
-* 질문이었음!
-  * 비디오가 큰 경우?
-  * 스트리밍 개념이 최근에야 기술이 생긴거잖.
-
-[(./200908 2주차 파이썬 연습2.ipynb]: 
-[./200908 2주차 파이썬 연습2.ipynb]: 
+<br/>

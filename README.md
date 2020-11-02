@@ -1,3 +1,5 @@
+
+
 # Image-processing-programming
 
 Image-processing-programming with python for univ. class
@@ -5,6 +7,8 @@ Image-processing-programming with python for univ. class
 <br/>
 
 <br/>
+
+
 
 ## 개발 환경 및 파이썬 문법 소개
 
@@ -2038,22 +2042,35 @@ cv2.destroyAllWindows()
 
 #### 4.1.1 관심영역 지정
 
+* 관심영역에 초록색 네모 그리기 예제 코드
+
 ```python
-# 내 own 값 ㅋㅋㅋ
+# 관심영역에 초록색 네모 그리기
 import cv2
 import numpy as np
 
 img = cv2.imread('img/jiheon.jpg')
-x = 320; y = 150; w = 50; h = 50
+x = 110; y = 100; w = 300; h = 300
 roi = img[y:y+h, x:x+w] # numpy는 copy가 아닌 referencing!!
 cv2.rectangle(roi, (0,0), (w-1, h-1), (0,255,0)) # BGR 순서
-img[y:y+h, x+w:x+w+w] = roi
+# rectangle(img, start, end, color [, ... ])
 cv2.imshow('img', img)
-cv2.imwrite('img/jiheon_roi.jpg', roi)
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 ```
+
+* 실행 결과
+
+![image-20201102205304078](./img/image-20201102205304078.png)
+
+
+
+* 대신귀
+* 여운지
+* 헌이를
+* 드리겠
+* 습니다
 
 <br/>
 
@@ -2065,14 +2082,22 @@ import cv2
 import numpy as np
 
 img = cv2.imread('img/jiheon.jpg')
-x = 110; y = 100; w = 300; h = 300
+x = 320; y = 150; w = 50; h = 50
 roi = img[y:y+h, x:x+w] # numpy는 copy가 아닌 referencing!!
 cv2.rectangle(roi, (0,0), (w-1, h-1), (0,255,0)) # BGR 순서
+# rectangle(img, start, end, color [, ... ])
+
+img[y:y+h, x+w:x+w+w] = roi # roi를 img에 붙여넣기
 cv2.imshow('img', img)
+cv2.imwrite('img/jiheon_roi.jpg', roi)
 
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 ```
+
+* 실행 결과
+
+![image-20201102205644292](./img/image-20201102205644292.png)
 
 <br/>
 
@@ -2086,6 +2111,8 @@ cv2.destroyAllWindows()
         * 윈도우는 마우스를 계~속 처리하고 있는거다.
 
 <br/>
+
+* 드래그 영역 네모 그리기 예제 코드
 
 ```python
 # 드래그 영역 네모 그리기
@@ -2102,12 +2129,12 @@ def onMouse(event, x, y, flags, param):
     global isDragging, pos, w, h, img
     if event == cv2.EVENT_LBUTTONDOWN:
         isDragging = True
-        pos = (x,y)
+        pos = (x,y) # 처음 누른 위치
     elif event == cv2.EVENT_MOUSEMOVE:
         if isDragging:
             img_draw = img.copy() # 보통 처리할 때는 원본이 아닌 카피 후 진행
-            cv2.rectangle(img_draw, pos, (x,y), (255,0,0), 2)
-            cv2.imshow('img_draw', img_draw)
+            cv2.rectangle(img_draw, pos, (x,y), (255,0,0), 2) # 현재 좌표 x,y
+            cv2.imshow('img_draw', img_draw) # 움직일때마다 출력
     elif event == cv2.EVENT_LBUTTONUP:
         if isDragging:
             isDragging = False
@@ -2143,9 +2170,10 @@ ret = cv2.**selectROI**([win_name,] img [, showCrossHair = True, fromCenter = Fa
 * showCrossHair: 선택 영역 중심에 십자모양 표시 여부
 * fromCenter: 마우스 클릭 시작지점을 영역의 중심으로 지정
 * ret: 선택한 영역 좌표와 크기(x,y,w,h), 선택을 취소한 경우 모두 0
-        
 
-영역 선택 후, 스페이스나 엔터키를 누르면 좌표와 크기값이 반환되고, 'c'키를 누르면 선택이 취소되고, 리턴값이 0이 된다.
+<br/>
+
+* **영역 선택 후, 스페이스나 엔터키를 누르면 좌표와 크기값이 반환되고, 'c'키를 누르면 선택이 취소되고, 리턴값이 0이 된다.**
 
 <br/>
 
@@ -2161,7 +2189,7 @@ x,y,w,h = cv2.selectROI('img', img, False)
 if w and h:
     roi = img[y:y+h, x:x+w]
     cv2.imshow('cropped', roi)
-    cv2.imwrite('img/cropped2.jpg', roi)
+    cv2.imwrite('img/cropped2.jpg', roi) # 저장
     
 cv2.imshow('img', img)
 
@@ -2171,6 +2199,589 @@ cv2.destroyAllWindows()
 
 <br/>
 
+* 드래그 한 영역 저장했다가 클릭한 좌표에 출력하기
+
+```python
+# 드래그 영역 클릭 좌표에 붙여넣기시, 범위가 벗어날 경우 오류 발생 해결 코드
+
+import cv2
+import numpy as np
+                
+img = cv2.imread('img/jiheon.jpg')
+x,y,w,h = cv2.selectROI('img', img, False)
+img_draw = img.copy() # call by reference 이므로 copy 해서 사용
+max_width = len(img_draw[0]) 
+max_height = len(img_draw)
+
+if w and h:
+    roi = img[y:y+h, x:x+w]
+
+def onMouse(event,x,y,flags,param):
+    global img_draw, roi, w, h, max_width, max_height
+    if event == cv2.EVENT_LBUTTONDOWN:
+        roi_draw = roi.copy()
+        
+        if x+w > max_width and y+h > max_height:
+            print("가로세로 다 넘어감")
+            sub_x = (x+w) - max_width
+            sub_y = (y+h) - max_height
+            roi_draw = roi[:-sub_y, :-sub_x]
+            
+        elif x+w > max_width:
+            print("가로 넘어감")
+            sub_x = (x+w) - max_width
+            roi_draw = roi[:, :-sub_x]
+            
+        elif y+h > max_height:
+            print("세로 넘어감")
+            sub_y = (y+h) - max_height
+            roi_draw = roi[:-sub_y, :]
+            
+        img_draw[y:y+h, x:x+w] = roi_draw
+        cv2.imshow('img', img_draw)
+
+cv2.setMouseCallback('img',onMouse)
+cv2.imshow('img', img)
+cv2.waitKey(0)
+cv2.destroyAllWindows()
+```
+
 <br/>
+
+### 색의 개념
+
+* 빛은 일정한 주기를 가진, 서로 다른 파장을 가진 파동이다~
+* 각기 다른 파장을 가진 파동의 모음!
+* 파장 길이에 따라 다른 성질을 가진다.
+  * 가시광선, 적외선, 자외선, 감마선 등으로 구분
+  * 가시광선 - 눈으로 볼 수 있는. 380nm ~ 780nm 파장의 빛에 해당
+
+<br/>
+
+![image-20201013091552569](./img/image-20201013091552569.png)
+
+* 주파수 : 초당 진동수, 파장의 역수. 파장과 주파수는 반비례한다.
+* 파장이 더 긴~ 거. 인프라 레드 적외선 / 파장이 더 짧은거 자외선
+* 우리 영상처리에서는 눈에 보이는. visible한.. 빛에 반사되어 나오는 가시광선 영역을 처리하는 것이다.
+* 파동을 다른 관점으로 보면 신호이다. 이 신호를 처리하는 기술을 신호 처리 기술이라고 하고.. 우리는 디지털로 하니까 디지털 처리 기술. DSP 처리방법.
+* 근데 이 신호처리 부분은 어렵기 때문에 이해가 어려워서 주로 할게 아니라면 생략한다고 함..ㅎㅎ
+
+<br/>
+
+#### 눈의 구조
+
+* 시각세포를 통해 빛을 받아들인다.
+* 원추세포(corn cell 옥수수) : 색상을 구분
+  * 파랑, 초록, 빨강 따로따로 있다. 세 가지 색깔에 대해 다르게 반응한다.
+* 간상세포(road? cell 원기둥) : 명암을 구분
+
+<br/>
+
+#### 원추 세포의 민감도
+
+![image-20201013092210931](./img/image-20201013092210931.png)
+
+* 베타, 감마, 페타 세포들이 파장에 따라 역할을 할 수 있는 범위이다.
+* 원추세포가 인지하는 범위가 다르다. 따라서 적정 비율로 잘 섞어야 됩니다.
+* 파란색이 좀 더 나와야 같은 밝기에서 똑같은 정도로 인식될 수 있다??
+
+<br/>
+
+#### 눈의 구조
+
+![image-20201013092816282](./img/image-20201013092816282.png)
+
+<br/>
+
+#### 삼색 정합
+
+* RGB를 어느 정도의 양으로 혼합해야 하는지 알 수 있으면 이론적으로 모든 색 표현이 가능하다!
+* RGB 세 파장을 사용해 표현 가능한 색을 조합하기에, 이 실험을 **삼색 정합**(trichromatic matching) 이라고 부른다.
+
+<br/>
+
+#### 색 정합 함수
+
+![image-20201013093127080](./img/image-20201013093127080.png)
+
+* 표현할 수 있는 범위가 다르다. 모든 색을 단색으로 만들지는 못한다고.. - 부분이 있어서(?)
+* color 모델이 표현할 수 있는 색의 범위!
+
+<br/>
+
+#### 색역(gamut)
+
+![image-20201013093324926](./img/image-20201013093324926.png)
+
+* 컬러 모델에 따라서 나타낼 수 있는 범위가 다르다.
+* 따라서 모델간 변환을 할 때 나타내지 못하는 범위가 생길 수 있다.
+
+<br/>
+
+#### 색의 표현 -> 컬러모델
+
+![image-20201013093426747](./img/image-20201013093426747.png)
+
+<br/>
+
+#### RGB 모델
+
+![image-20201013093731874](./img/image-20201013093731874.png)
+
+* Red Green Blue - Cyan Magenta Yellow
+* 3원색의 양을 얼마나 쪼개느냐에 따라 색의 종류가 달라진다!
+* 있다 없다로 계산하면 2의 3승. 8개.
+
+<br/>
+
+#### Colour Depth
+
+![image-20201013094005359](./img/image-20201013094005359.png)
+
+* 통상적으로 쓰는 흑백 이미지는 grayscale이다. 위에서 Black/White는 진짜 흑 / 백.
+* 인간의 눈은 30만 정도 구별 가능
+* 아날로그로 1670만 정도를 표현 가능.
+* But 예전 초창기는 8bit 컴퓨터로 썼기에 표현 가능한 범위가 적었음, 256색상.
+* 16bit 부터 RGB를 나누기 시작! 3x5 = 15 그리고 한 비트는 눈의 특징을 활용해서... 잘 구분할 수 있는 초록색을 더 나눠주자! 해서 썼다고 함. 그게 아래 16비트 컬러, high color. 그 당시 이야기!
+
+<br/>
+
+![image-20201013094226450](./img/image-20201013094226450.png)
+
+* 어차피 지금은 24bit(3byte) 컬러를 쓰니까~
+
+<br/>
+
+![image-20201013094301255](./img/image-20201013094301255.png)
+
+* posterization. 포스터화. 컬러 깊이를 감소하면 이렇게.. 된다. 위에서부터 1 2 3 4 순서로 변환..
+
+<br/>
+
+![image-20201013094346537](./img/image-20201013094346537.png)
+
+* 24비트 컬러를 그대로 쓰는걸 direct colour.
+* 8비트 컬러를 썼을 때는 indexed colour가 나왔다.
+* 필요한 부분만 1670에서 256개의 색상에 넣어서 표현하는것이 인덱스 컬러 방식
+* 화려하지 않은 이상.. 보통 하나의 사진에 표현되는 색상은 그리 많지 않다.
+* 하늘 파란 색을 찍고 싶을 때는 해를 등지고 찍어야 해~~ ㅎㅎ
+
+<br/>
+
+![image-20201013094631565](./img/image-20201013094631565.png)
+
+* 우리가 생각하는 것 보다 상당히 제한된 색상이 화면에 나타난다.
+* 위 사진은 몇가지 빼곤 거의 파란색의 밝기 정도로 다 표현 가능하다.
+
+<br/>
+
+![image-20201013094727314](./img/image-20201013094727314.png)
+
+* 컬러 참조표
+
+<br/>
+
+![image-20201013094926681](./img/image-20201013094926681.png)
+
+* 대신 인덱스 컬러 팔레트방식을 사용하면 두 이미지를 동시에 뜨면.. 색깔이 이상해지는 문제가 생겼어!
+
+<br/>
+
+![image-20201013095129347](./img/image-20201013095129347.png)
+
+* 시스템 팔레트, 사용자 정의 팔레트, 웹 팔레트... 
+
+<br/>
+
+#### 인덱스 칼라가 어떻게 표현되나?
+
+* 윈도우 기본 포멧 BMP 파일
+
+![image-20201013100846970](./img/image-20201013100846970.png)
+
+* 헤더는 상단 세 개, 실질적인 이미지는 맨 아래!!
+
+<br/>
+
+![image-20201013101157043](./img/image-20201013101157043.png)
+
+* grayscale은 RGB 값이 똑같으면 회색. 00 00 00은 검정.. 그래서 FF FF FF 이면 하얀색
+
+<br/>
+
+![image-20201013101256278](./img/image-20201013101256278.png)
+
+* 트루칼라는 팔레트가 없다.
+* 파일의 구조하고 Numpy의 구조하고는 엄연히 다르다!
+* 이미지 저장할 때는 OpenCV에서 알아서 파일 포멧에 맞게 알아서 다 해준다.
+* 근데 OpenCV를 안쓰면.. 하나하나 형식에 맞춰서 다 해줬다. 물론 라이브러리로 해주지 일일이 하진 않음
+
+<br/>
+
+![image-20201013101520123](./img/image-20201013101520123.png)
+
+* 팔레트는 가장 중요한 256가지 색을 선택해 저장하므로 일부 누락될 수 있다.
+* 가장 가까운 컬러값으로 대체되는데, 이로인해 포스터 효과가 발생!
+* 이를 또 해결하고자 나온게 디더링. 한 컬러 영역을 여러 컬러 패턴으로 대체. 칼라로 확장
+* 흑백의 경우에는 하프톤 처리를 이용함. 이걸 칼라로 확장시킨게 디더링.
+
+<br/>
+
+#### 디더링 예시
+
+![image-20201013101536565](./img/image-20201013101536565.png)
+
+* 1번이 오리지날, 3번이 팔레트, 2번이 디더링, ...
+
+<br/>
+
+![image-20201013101709951](./img/image-20201013101709951.png)
+
+* RGB 세 개가 합쳐지면서 생긴 것이 Cyan, Magenta, Yellow!
+* 백색광에서 특정 색을 빼서 만들어준 것이라고 표현하기도 한다. 이게 **감법원색**.
+* 발광체의 빛을 직접 쳐다보는 것은 RGB 색. 물체에 부딪혀 반사된 그림을 보는 것은 CMY 색!
+* 그릴 때 물감색.
+
+<br/>
+
+![image-20201013101853547](./img/image-20201013101853547.png)
+
+* W에서 R을 뺀 것이 Cyan 색 (G+B)
+* W에서 G를 뺀 것이 Magenta 색 (B+R)
+* 색깔을 칠할 때마다 감법... 물감은 칠하면 칠할수록 까만색이 되어간다.
+
+<br/>
+
+![image-20201013102015339](./img/image-20201013102015339.png)
+
+* 정확한 보색 빛을 흡수하는 잉크는 제작 불가능하다. 약간씩 어긋나있다. 완벽한 검정색은 만들 수 없었다. 굉장히 어렵다! 뭐 최근에는 완벽에 가까운 색 만들었다고 하던데.. 몰라.ㅎㅎ
+* 보통 검정색을 만들려면 세 번 칠을 해야한다. 그러면.. 너덜너덜..
+* 잉크 보면 검정잉크 따로. **Kappa**색. 그래서 CMYK 모델!
+* RGB와 CMYK의 표현 가능 범위가 다르다! 모니터는 RGB, 프린터는 CMYK.
+* 하지만 완벽하지 못하다. 색깔이 완벽하지 못하기 때문에.
+* 최대한 보정을 잘 해놓은.. ㅎㅎㅎ 사진을 뽑고싶으면 현상소에 맡기는게 낫다~
+
+<br/>
+
+![image-20201013102411399](./img/image-20201013102411399.png)
+
+* 보통 색깔을 말할 때 맑은 정도(채도), 밝은 정도(명도), 색깔(색상)을 이용해 말하지!
+* 색깔을 Hue, 채도는 Saturation, 명도는 Value라고 한다. 이걸 딴 것이 **HSV** 모델
+
+<br/>
+
+![image-20201013102742501](./img/image-20201013102742501.png)
+
+* 원뿔형, 원판의 각도를 이용해 색상을 표현한다.
+* 각도로 색상을, 높이를 명도, 바깥부분에서 중점으로 이동하는 정도에 따라 채도(0%)를 말한다.
+* 채도는 색상에 흰색(0%)을 섞은 효과 라고 한다. 원뿔의 중앙은 흰색(0%), 바깥은 (100%)
+
+![image-20201013104819301](./img/image-20201013104819301.png)
+
+<br/>
+
+![image-20201013102936982](./img/image-20201013102936982.png)
+
+* 흑백은 명암 정보만 있었을거야. 근데 컬러로 바뀌면서... 어떡하지? 하나의 신호로 흑백 컬러 둘 다 볼 수 있게 하려면?
+* Y = (R+G+B) / 3. 이론적으론. 근데 실제론 아니지. 비율을 다르게 해서.
+* Y값은 휘도 라고 하는데, 쉽게 말해 **밝기**다. **명암**!!
+* Y값과 색차를 이용해 컬러 표현!!
+  * B-Y and R-Y
+  * 흑백은 Y값을 그대로 출력해준다.
+  * 칼라는 방정식을 다시 풀어서 칼라로 바꿔 출력해준다.
+  * 이는 아날로그 TV였을 때.
+
+<br/>
+
+![image-20201013103350603](./img/image-20201013103350603.png)
+
+* 물론 OpenCV에서는 다 함수로 존재하니까 여러분은 신경쓸 필요 없습니다.
+
+<br/>
+
+![image-20201013103504500](./img/image-20201013103504500.png)
+
+* R, G, B 나누어 처리. 존재하는 색은 하얗게 보이고, 해당 색이 없으면 Black. 어둡게.
+
+<br/>
+
+### 4.2 컬러 스페이스
+
+* out = cv2.cvtColor(img, flag)
+    * img: NumPy 배열, 변환할 이미지
+    * flag: 변환할 컬러 스페이스, cv2.COLOR_로 시작(274개)
+      * CV2.COLOR_BGR2GRAY
+      * CV2.COLOR_GRAY2BGR
+      * CV2.COLOR_BGR2RGB
+      * CV2.COLOR_BGR2HSV
+      * CV2.COLOR_HSV2BGR
+      * CV2.COLOR_BGR2YUV
+      * CV2.COLOR_YUV2BGR
+    * out: 변환한 결과 이미지(NumPy 배열)
+
+<br/>
+
+### 4.3 thresholding (이진화, binarization..)
+
+* 전역 스레시 홀딩
+* 영역마다 다른..
+
+<br/>
+
+#### 4.3.1 전역 스레시홀딩
+
+* ret, out = cv2.threshold(img, threshold, value, type_flag)
+  * img: NumPy 배열, 변환할 이미지
+  * threshold: 경계값
+  * value:
+  * type_flag:
+    * cv2.THRESH_BINARY:
+    * cv2.THRESH_BINARY_INV:   # 뒤집어지는 것. 검정 흰색 반전. 
+    * cv2.THRESH_TRUNC:  # 큰 값에 대해서는 흰색으로 바뀔거고, 나머지는 원래값 그대로 가져라
+    * cv2.THRESH_TOZERO: # 큰 값은 그대로 두고, 작은 값은 0으로 바꿔줘라.
+    * cv2.THRESH_TOZERO_INV: # 반전
+
+
+
+![image-20201020092107923](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201020092107923.png)
+
+<br/>
+
+어디를 잘라야 할지... 보기 위해서는 히스토그램을 얻은 다음에 끊도록...
+
+오츠 OTSU 알고리즘? 자동으로 끊게 
+
+분산이 적다는 것은 적게 퍼져있다. 적절한 값에 자리잡아있다라는 의미.
+
+따라서 분산이 가장 적게 있는 곳에 있는 것이 오츠 알고리즘 이래...
+
+그래서 가장 작은 분산값을 찾아서 바이너리제이션 해주면 된다네...
+
+<br/>
+
+### 4.3.3 Adaptive threshold
+
+블록마다 local한 threshold를 만드는 것
+
+부분부분 하기때문에 따로따로 해줘야해서 속도 문제가 있다.
+
+그래서 보통 간단한 알고리즘을 쓰게 된다.
+
+그러다보니.. 자른 값이 적절한 값이 아닐 가능성이 있다.
+
+이를 보정해줄 값으로 C를 준다.
+
+
+
+* cv2.adaptiveThreshold(img, value, method, type_flag, block_size, C)
+  * img: 입력 영상
+  * value: 경계값을 만족하는 픽셀에 적용할 값
+  * method: 경계값 결정 방법
+    * cv2.ADAPTIVE_THRESH_MEAN_C: 이웃 픽셀의 평균으로 결정
+    * cv2.ADAPTIVE_THRESH_GAUSSIAN_C: 가우시안 분포에 따른 가중치의 합으로 결정
+
+![image-20201020093551171](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201020093551171.png)
+
+
+
+
+
+## Chapter 07, 영상의 산술 및 논리연산
+
+* 덧셈 연산
+
+  * 두 영상의 같은 위치에 존재하는 픽셀값을 더해서 결과 영상의 픽셀값으로 설정하는 연산
+
+    ```
+    h(x,y) = f(x,y) + g(x,y)
+    ```
+
+  * 덧셈 결과가 255보다 크면 픽셀 값을 255로 설정
+
+<br/>
+
+![image-20201020100824257](./img/image-20201020100824257.png)
+
+* 까만 원. mask 영역이라고 함.
+* 영상처리에서는 어떤 '효과를' 내고 싶어하냐가 중요하다.
+
+<br/>
+
+![image-20201020100944811](./img/image-20201020100944811.png)
+
+* C++ 함수 코드인데 참고하라고 굳이 보여준거얌.
+* OpenCV도 누군가는 위 코드처럼 작성해서 라이브러리로 만든것이야.
+* 도전은 하되, 기본기는 충실히!
+
+<br/>
+
+* 뺄셈 연산
+  * 두 영상의 같은 위치에 존재하는 픽셀값을 빼서 결과 영상의 픽셀값으로 설정하는 연산
+
+  ```
+  h(x,y) = f(x,y) - g(x,y)
+  ```
+
+  * 뺄셈 결과가 0보다 작으면 픽셀 값을 0으로 설정
+  * clamping ( 사람이 원해서 자르는거고 )  clipping ( 원치 않게... )
+
+<br/>
+
+![image-20201020101345397](./img/image-20201020101345397.png)
+
+* 페더링을 이용한 mask 이미지
+
+<br/>
+
+* 평균 연산
+
+  ```
+  h(x,y) = 1/2[f(x,y) + g(x,y)]
+  ```
+
+  * 덧셈 연산 : 결과 영상이 전체적으로 밝아짐
+  * 평균 연산 : 입력 영상의 밝기 정도를 그대로 유지
+
+<br/>
+
+![image-20201020101540194](./img/image-20201020101540194.png)
+
+* 평균 연산을 이용해 배경 noise 제거!
+
+<br/>
+
+![image-20201020101901473](./img/image-20201020101901473.png)
+
+<br/>
+
+![image-20201020101917668](./img/image-20201020101917668.png)
+
+* And 연산으로 binarization!
+* 128보다 밝으면 (크면) 128, 어두우면 (작으면) 0
+
+<br/>
+
+![image-20201020102251037](./img/image-20201020102251037.png)
+
+* 요건 Or 연산
+
+<br/>
+
+### 4.4 이미지 연산
+
+![image-20201020102348410](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201020102348410.png)
+
+<br/>
+
+![image-20201020104230604](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201020104230604.png)
+
+<br/>
+
+
+
+
+
+<br/>
+
+![image-20201027100942037](./img/image-20201027100942037.png)
+
+<br/>
+
+![image-20201027110312406](./img/image-20201027110312406.png)
+
+<br/>
+
+![image-20201027101041934](./img/image-20201027101041934.png)
+
+<br/>
+
+![image-20201027101121617](./img/image-20201027101121617.png)
+
+* 컴퓨터 처리할 때 히스토그램만 보 고도  영상의 밝기를 한눈에 알 수 있다.
+
+<br/>
+
+![image-20201027101208911](./img/image-20201027101208911.png)
+
+* 픽셀의 분포를 다르게 하는데..
+* 세 번째의 경우 명암비(contrast)가 낮다
+* 네 번째의 경우 명암비가 좋다 라고 한다.
+* 보통 사람이 보았을 때 '이미지를 개선'시키는거야.
+* 하나는 히스토크램을 스트레징. 양 옆으로 넓게 펴는것
+* 또 하나는 이퀄라이징. 똑같이 ..
+
+<br/>
+
+![image-20201027101406307](./img/image-20201027101406307.png)
+
+* 균등화는 평평하게 한다고 해서 평활화 라고도 한다. **equalization**.
+* 스트레칭은 넓혀주는거랑 좁혀주는 것(shrink)까지 포함해야 하는데.. 뭐 단어의 논란이 있단다.
+* OpenCV에서는 또 normalize라고 한다더라.. 허허허. 언어라는거는 참.
+
+<br/>
+
+![image-20201027101910975](./img/image-20201027101910975.png)
+
+<br/>
+
+![image-20201027101950577](./img/image-20201027101950577.png)
+
+* 이 식은 많이 쓴대.
+
+<br/>
+
+* **equalization**
+
+![image-20201027102114579](./img/image-20201027102114579.png)
+
+* 평활화, 균등화, equalization.
+
+<br/>
+
+![image-20201027102200662](./img/image-20201027102200662.png)
+
+* histogram의 누적 그래프를 그린다!
+* 그 까만 누적 그래프를 매핑 시켜서 ..
+* 어렵다. 차근차근 살펴보자
+
+<br/>
+
+#### 1. 먼저!
+
+![image-20201027102457998](./img/image-20201027102457998.png)
+
+<br/>
+
+#### 2. 다음
+
+![image-20201027102531525](./img/image-20201027102531525.png)
+
+<br/>
+
+#### 3. 그리고..
+
+![image-20201027102711959](./img/image-20201027102711959.png)
+
+<br/>
+
+![image-20201027102725526](./img/image-20201027102725526.png)
+
+* 부작용이 있긴 하지만, 전체적으로는 명암비가 좋아진다
+
+<br/>
+
+![image-20201027102752171](./img/image-20201027102752171.png)
+
+<br/>
+
+![image-20201027102845219](./img/image-20201027102845219.png)
+
+<br/>
+
+### 히스토그램의 스트레칭은 가로로 그냥 늘린거고, equalize는 늘려서 세로도 조금 평탄하게 만든것?? => 각 픽셀들의 밝기가 한쪽에 쏠려있지 않고 균등해지니까.. 비교적 선명해진다?라고 표현할 수 있는건가?
+
+<br/>
+
+
 
 <br/>

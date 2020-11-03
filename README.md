@@ -2782,6 +2782,51 @@ cv2.destroyAllWindows()
 
 <br/>
 
+#### 4.5.3 이퀄라이즈
 
+* dst = cv2.equalizeHist(src[, dst])
+  * src : 대상 이미지, 8비트 1채널
+  * dst : 결과 이미지
 
 <br/>
+
+#### 4.5.4 CLAHE
+
+* Contrast Limiting Adaptive Histogram Equalization (대비 제한 히스토그램 평활화) 
+* clahe = cv2.createCLAHE(clipLimit, tileGridSize): CLAHE 생성
+  * clipLimit: Contrast 제한 경계값, 기본 40.00
+  * tileGridSize: 영역 크기, 기본 8x8
+  * clahe: 생성된 CLAHE 객체
+* clahe.apply(src): CLAHE 적용
+  * src: 입력 영상
+
+<br/>
+
+#### 4.5.6 역투영
+
+* cv2.calcBackProject(img, channel, his, ranges, scale)
+  * img: 입력 영상, [img]
+  * channel: 처리할 채널, [channel]
+  * hist: 역투영에 사용할 히스토그램
+  * ranges: 각 픽셀이 가질 수 있는 값의 범위
+  * scale: 결과에 적용할 배율 계수
+
+<br/>
+
+#### 4.5.7 히스토그램 비교
+
+* cv2.compareHist(hist1, hist2, method)
+  * hist1, hist2: 비교할 2개의 히스토그램, 크기와 차원이 같아야 함
+  * method: 비교 알고리즘 선택 플래그 상수
+    * cv2.HISTCOMP_CORREL: 상관관계(1: 완전 일치, -1: 최대 불일치, 0: 무관계)
+    * cv2.HISTCOMP_CHISQR: 카이제곱(0: 완전 일치, 큰값(미정): 최대 불일치)
+    * cv2.HISTCOMP_INTERSECT: 교차(1: 완전 일치, 0: 최대 불일치(1로 정규화한 경우))
+    * cv2.HISTCOMP_BHATTACHARYYA: 바타차야(0: 완전 일치, 1: 최대 불일치)
+    * cv2.HISTCOMP_HELLINGER: HISTCOMP_BHATTACHARYYA와 동일
+
+<br/>
+
+<br/>
+
+<br/>
+

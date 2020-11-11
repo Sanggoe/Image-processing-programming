@@ -1,5 +1,3 @@
-
-
 # Image-processing-programming
 
 Image-processing-programming with python for univ. class
@@ -2586,7 +2584,7 @@ cv2.destroyAllWindows()
 
 
 
-## Chapter 07, 영상의 산술 및 논리연산
+## Chapter , 영상의 산술 및 논리연산
 
 * 덧셈 연산
 
@@ -2823,6 +2821,188 @@ cv2.destroyAllWindows()
     * cv2.HISTCOMP_INTERSECT: 교차(1: 완전 일치, 0: 최대 불일치(1로 정규화한 경우))
     * cv2.HISTCOMP_BHATTACHARYYA: 바타차야(0: 완전 일치, 1: 최대 불일치)
     * cv2.HISTCOMP_HELLINGER: HISTCOMP_BHATTACHARYYA와 동일
+
+<br/>
+
+<br/>
+
+<br/>
+
+## Chapter 05. 기하학적 변환
+
+* 앞서 한 것들은 밝기나 채도 명도를 바꾸는 거였지, 모양을 바꾸는게 아니었다.
+* 지금 할 것은 물체의 모양과 위치 등을 바꾸는 행위들이다!
+
+<br/>
+
+![image-20201110092236153](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110092236153.png)
+
+* 픽셀 좌표가 이동한다 → 물체 모양이 변형된다
+* 워핑(Warping) 픽셀별로 이동이 바뀌는 거. 오른쪽 개 스마일로 만들기..
+* 모핑(Morphing) 한 영상에서 다른 영상으로 서서히 변환되는거.
+  * 터미네이터 액체에서 로봇으로 변하는?
+
+<br/>
+
+![image-20201110092347298](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110092347298.png)
+
+* 원 형상에서 목적영상으로 : 전방향, 순방향 forward.
+* 거꾸로 역매핑 : 역방향 backward 사상.
+
+<br/>
+
+![image-20201110092518022](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110092518022.png)
+
+* 오버랩 : 다른 두 영상이 하나의 목적지로 겹치는거
+* 홀 : 목적지에 영상이 도착하지 않는거
+
+<br/>
+
+![image-20201110092647943](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110092647943.png)
+
+* 오버랩의 경우, 축소할 때 많이 생긴다.
+  * (x/2, y/2)에 매핑될 때 짝수인 경우는 너무 잘 된다.
+  * 근데 홀수인 경우 문제가 생긴다. 좌표는 정수니까.
+  * 버림의 방법을 쓸 경우, 좌표가 중복되는 경우가 생길 수 있다.
+* 따라서 축소의 경우 이미지가 뭉개지는 문제가 생긴다.
+
+
+
+* 홀 문제의 경우, 확대할 때 많이 생긴다.
+  * (2x, 2y)에 매핑될 때 존재하지 않는 좌표에 되기 때문에 홀이 생긴다.
+* 확대의 경우 군데군데 비어잇는 경우가 생길 수 있다.
+
+<br/>
+
+![image-20201110093136651](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110093136651.png)
+
+* 이를 해결하기 위해 역방향 사상을 사용!
+* 병합이 일어나지 않는다.
+* 목적 영상에서의 한 픽셀이 원 영상에서 뭐였는지 함수에 의해서 따라가면 어떤거였는지 알 수 있다.
+* 모든 픽셀에 대해서 어디서 왔는지 다 역매핑이 되니까 비어있는 hole은 존재하지 않게 된다.
+  * (0.5, 0.5) 처럼 소수 좌표가 역매핑 될 경우 버림같은걸 선택하는데, 이 문제를 해결하기 위한게 뒤에 나올 보간법
+
+<br/>
+
+![image-20201110093326404](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110093326404.png)
+
+* 오차가 클 수도 있는데, 이것을 최소화하기 위해서. 좋은 품질 영상을 만들기 위해!!
+
+<br/>
+
+![image-20201110093403443](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110093403443.png)
+
+* 가장 인접한 이웃 화소 보간법
+  * 알고리즘은 단순한 대신 해상도는 떨어져보인다.
+
+<br/>
+
+![image-20201110093447890](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110093447890.png)
+
+* 뭉툭함 발생!
+
+<br/>
+
+![image-20201110093519733](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110093519733.png)
+
+* 히스토그램하고 똑같다. 식이 똑같다. 그래프 구하는거.
+* 대신 이미지는 2차원 평면이기 때문에 저 식 하나로 끝나진 않아..
+
+<br/>
+
+![image-20201110093721293](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110093721293.png)
+
+* **질문! 화소값 이라고 하면 해당 이미지가 뭐냐에 따라서 BGR 세 가지 색 일 수도 있고, HSV 밝기 일 수도 있고, Grayscale이어서 명암일 수도 있고 한거죠?**
+* **그럼 그 값에 대해서 자연스러운 연결처럼 보이기 위해 중간값(?)을 넣는거다 라고 생각하면 되나요?**
+
+<br/>
+
+![image-20201110094001468](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110094001468.png)
+
+* 식... 뭐야... 어떻게 해야.... 무으ㅓ어어ㅓ
+
+<br/>
+
+![image-20201110094020203](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110094020203.png)
+
+* 더 부드러운 이미지를 얻을 수는 있지만, 많은 계산량이 소모된다!
+
+<br/>
+
+![image-20201110094130653](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110094130653.png)
+
+* 정방향을 역방향으로 고친다.
+* ...
+
+<br/>
+
+![image-20201110094414159](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110094414159.png)
+
+* 2배 축소. 축당 2배. 라고 하니까.. 면적은 4배가 된다. 단어 표현 주의 ㅋㅋ
+
+<br/>
+
+![image-20201110094446912](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110094446912.png)
+
+<br/>
+
+![image-20201110094633978](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110094633978.png)
+
+<br/>
+
+![image-20201110095143263](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110095143263.png)
+
+<br/>
+
+![image-20201110095419654](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110095419654.png)
+
+* 중심 회전을 한것!
+
+<br/>
+
+![image-20201110095412424](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110095412424.png)
+
+<br/>
+
+![image-20201110095455896](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110095455896.png)
+
+* 순방향
+* 역방향
+* 최종 식...!?
+
+<br/>
+
+![image-20201110095553688](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110095553688.png)
+
+<br/>
+
+#### 먼저 행렬연산 이해!!
+
+#### 이동 변환의 경우?
+
+![image-20201110102705376](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110102705376.png)
+
+* 우리는 변환행렬만 알면 된다!!
+
+<br/>
+
+### affine 변환
+
+<br/>
+
+#### 확대 축소의 경우?
+
+![image-20201110104307458](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110104307458.png)
+
+* 마찬가지 우리는 변환행렬만 알면 된다
+
+<br/>
+
+#### 회전 변환의 경우?
+
+![image-20201110110940057](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110110940057.png)
+
+* 코마사사코
 
 <br/>
 

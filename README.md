@@ -3010,3 +3010,89 @@ cv2.destroyAllWindows()
 
 <br/>
 
+너무 많아 버거워..
+
+<br/>
+
+<br/>
+
+<br/>
+
+## Chapter 6. 영상필터
+
+![image-20201117103717873](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201117103717873.png)
+
+원래는 세 단원으로 구분해야 합니다...
+
+* 영상필터
+* 에지 검출
+* 모폴로지
+
+<br/>
+
+![image-20201117103730864](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201117103730864.png)
+
+* 주파수 도메인. 생략합니다.
+
+<br/>
+
+![image-20201117104237231](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201117104237231.png)
+
+* 기본적으로 중첩 포문 여러개로 연산한다.
+* 각 좌표끼리 곱해서 다 더한 값인 g(x, y)를  f(x,y)에다가 대신 넣어준다~ 라고 합니다...
+
+<br/>
+
+![image-20201117104502648](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201117104502648.png)
+
+* 위와 같은 3x3 크기의 형식의 마스크를 하는 필터는 세 개가 있다고 한다.
+
+<br/>
+
+![image-20201117105648604](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201117105648604.png)
+
+* 뭐 이런것도 있대!
+
+<br/>
+
+![image-20201117104842942](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201117104842942.png)
+
+* 경계 처리!! 기본적으로는 4가지가 있는데, 여기선 2가지를 제시한다.
+* 최외곽 픽셀은 마스크 연산에서 제외하는 방법
+  * 하지만, 이러면 결과 영상의 크기가 작아진다. 바뀐다.
+* 최외곽 바깥에 가상의 픽셀이 있다고 가정하는 방법
+  1. 전부 0으로 초기화하기
+     * 차이가 큰 부분이 엣지인데, 테두리에 또 엣지가 검출될 수도 있다.
+  2. 최외곽 값과 똑같은 값 복사해서 넣어주기
+     * 연산이 너무 많아진다. 또.. 다른 문제들도
+  3. 지구본에 지도를 싸는 것 처럼 이어준다?
+     * 원래 이어지는 값이 아닌 경우 억지로 이어주는거라 값이 많이 차이날 수 있다.
+
+<br/>
+
+![image-20201117105015599](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201117105015599.png)
+
+* 문제점!!
+  * for 뤂을 돌면서 이미 연산한 뒤의 값이 저장된다.
+
+<br/>
+
+![image-20201117105147440](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201117105147440.png)
+
+* 노란색 부분은 이미 값이 변했다.
+* 값을 copy 해서 해주어야 한다!!
+* 위 로우레벨 코딩을 할 때는 이런 부분은 주의해야 한다.
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>
+
+<br/>

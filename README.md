@@ -2028,6 +2028,22 @@ cv2.destroyAllWindows()
 
 <br/>
 
+#### 2.4.3 트랙바
+
+
+
+
+
+
+
+
+
+
+
+
+
+<br/>
+
 <br/>
 
 ## 4. 이미지 프로세싱 기초
@@ -3085,14 +3101,334 @@ cv2.destroyAllWindows()
 
 <br/>
 
-<br/>
+### 블러링
+
+![image-20201124091130863](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124091130863.png)
+
+* 주변 픽셀의 평균 구하는 것
+* 선이 흐릿해지지만, 주변 노이즈는 좀 사라진다.
 
 <br/>
 
-<br/>
+![image-20201124091401975](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124091401975.png)
+
+* 마스크를 무작정 키우면 연산 양이 너무 많아진다.
 
 <br/>
 
-<br/>
+![image-20201124091456043](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124091456043.png)
+
+* 평균 값 필터에 거리에 대한 가중치를 주어 계산하는 방법.
+* 속도, 성능에 대한 이점
 
 <br/>
+
+![image-20201124091623401](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124091623401.png)
+
+* 덜 뭉개지면서 부드럽게 만들어주는게 가중평균 인것이죠.
+
+<br/>
+
+![image-20201124091657142](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124091657142.png)
+
+* 덜 인위적으로, 자연스럽게 해준 것이 가우시안 필터
+* 마스크 만들 때 계산량이 많은거지, 한 번 계산해 놓으면 뭐..
+* 이미지 각 연산에 문제가 있는건 아니야~
+
+<br/>
+
+![image-20201124091836333](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124091836333.png)
+
+* 대신 마스크 크기가 문제가 된다.
+* 시그마는 표준 편차.
+* 마스크의 크기가 커진다
+  * 멀리까지 보겠다.
+  * 블러링 양이 많아지고 성능이 좋아짐
+  * 다만.. 연산양 어마어마하게 늘어남
+
+<br/>
+
+![image-20201124091957325](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124091957325.png)
+
+* 시그마(표준편차)가 커질 수록 마스크의 크기가 커지고, 더 멀리있는 값까지 본다.
+* 따라서 블러링이 아주아주 잘 된다. 많은 블러링을 할 때 쓰는 것
+
+<br/>
+
+### 샤프링
+
+![image-20201124092104990](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124092104990.png)
+
+* 순서대로 원본, 블러링, 원본-블러링, 샤프링
+* 블러링으로 샤프링을 만드는 것을 언샤프 마스크라고 한다.
+* 원본에서 블러링을 값을 빼주는 것. 그럼 마이너스 플러스 함수가 나온다.
+* 그 빼준 값을 다시 원본에다가 더해준다. 그럼 더 뽈록해진다.
+* 2*원본 - 블러링함수
+
+<br/>
+
+![image-20201124092430379](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124092430379.png)
+
+* ?? 난 잘 모르겠는데.. 고화질이 아니어서 그런가
+
+<br/>
+
+### 라플라시안 필터
+
+![image-20201124092556881](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124092556881.png)
+
+![image-20201124092834586](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124092834586.png)
+
+* 라플라시안 필터
+  * 원본에서 2차 미분값을 빼준다. 그러면 위의 언샤프와 비슷한 결과를 얻게된다.
+
+<br/>
+
+![image-20201124092845480](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124092845480.png)
+
+<br/>
+
+![image-20201124092945784](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124092945784.png)
+
+<br/>
+
+![image-20201124093055257](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124093055257.png)
+
+* 저걸 다시 빼주면 언샤프 마스킹
+
+<br/>
+
+![image-20201124093125544](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124093125544.png)
+
+* 응용한거. 식 전개한거래
+
+<br/>
+
+### 하이부스트 필터
+
+![image-20201124093218894](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124093218894.png)
+
+* 하이부스트 필터
+  * 이미지가 밝아진다
+  * 엣지도 살려주고, 밝기도 살려주는.
+
+<br/>
+
+### 노이즈
+
+![image-20201124093327117](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124093327117.png)
+
+* **영상처리는 항상 노이즈 처리가 필요하다.**
+
+<br/>
+
+![image-20201124093724688](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124093724688.png)
+
+<br/>
+
+![image-20201124093755632](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124093755632.png)
+
+<br/>
+
+![image-20201124093848361](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124093848361.png)
+
+* 아날로그에는 있을 수 없고, 디지털에서 존재하는 잡음이다.
+
+<br/>
+
+![image-20201124094010499](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124094010499.png)
+
+<br/>
+
+![image-20201124094109021](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124094109021.png)
+
+* 대표적인게 미디언 필터!
+* 주변 픽셀들의 값을 오름 또는 내림 차순으로 정렬하여 중앙값으로 대체!
+* 데이터의 평균값도 의미가 있지만, 중앙값도 많이 사용한다.
+* 노이즈의 크기가 몇 픽셀이냐에 따라서..
+* 솔트엔페퍼를 보면 노이즈가 0아니면 255이기 때문에, 미디언필터 결과가 거의 만점!
+* 정렬만 하기 때문에 연산 속도도 그렇고 효과는 좋다.
+
+<br/>
+
+![image-20201124094415187](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124094415187.png)
+
+<br/>
+
+### 마스크를 이용한 엣지 검출
+
+![image-20201124101039085](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124101039085.png)
+
+<br/>
+
+![image-20201124101144423](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124101144423.png)
+
+* 변곡점이 되는 부분만 검출이 되는 것
+
+<br/>
+
+![image-20201124101300721](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124101300721.png)
+
+* 마스크를 어떻게 구성하느냐에 따라서 여러 알고리즘이 나온다!
+
+<br/>
+
+![image-20201124101605472](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124101605472.png)
+
+* 대표적으로 로버츠, 프리윗, 소벨.
+* 로버츠
+  * 2*2 마스크, 대각선으로 검출
+  * 계산양이 작고, 속도가 빠르다. 대신 얇음
+* 프리윗, 소벨
+  * 3*3 마스크
+  * 계산양이 크고, 속도는 좀 느릴것
+* 마스크의 크기가 큰 것이 아무래도 값이 크게 나타날것. 검출이 잘 될것이다.
+
+<br/>
+
+![image-20201124101632910](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124101632910.png)
+
+* 위는 좌우, 아래는 위아래
+
+* 밝기 차이가 난다. 소벨이 좀 더 밝게. 
+* 속도는 로버츠
+* 성능면에서는 소벨이 젤 좋은듯
+
+<br/>
+
+![image-20201124101837659](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124101837659.png)
+
+* 이걸 이용해서 전처리나 중요한 정보나... 그래디언트가 사용되는 경우가 많다고 한다.
+
+<br/>
+
+![image-20201124101913212](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124101913212.png)
+
+* 위에는 엣지검출
+* 아래는 그걸 다시 바이너리제이션 한 것!
+
+<br/>
+
+![image-20201124102227065](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124102227065.png)
+
+<br/>
+
+![image-20201124102241944](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124102241944.png)
+
+<br/>
+
+![image-20201124102340666](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124102340666.png)
+
+* 엣지들 중에 가장 최댓값만 남겨서 엣지 선에는 한 가지만 가지게?? **질문!**
+
+<br/>
+
+![image-20201124103157831](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124103157831.png)
+
+* 한 픽셀에 대해 이 픽셀이 엣지냐 아니냐는 그 픽셀만 가지고 결정되는 것이 아니다!
+* 주변에 아무것도 없으면 엣지가 아니고 그냥 점이지.
+* 약한 엣지를 볼 때 주변을 보는 것. 그 픽셀과 붙어있는 픽셀들이 엣지였으면, 얘는 엣지!
+* **그럼 어딘가에는 강한 엣지가 있어야지만 엣지가 되는건가...??** **질문!**
+
+<br/>
+
+![image-20201124103527921](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124103527921.png)
+
+* 케니엣지 쓰면 아주 성능이 좋다
+* 하지만... 속도가... 많이 요구됩니다.
+
+<br/>
+
+![image-20201124103606042](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124103606042.png)
+
+<br/>
+
+![image-20201124104006875](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124104006875.png)
+
+* 모폴로지에서 이야기하는 픽셀은, 픽셀의 '좌표'를 말한다.
+
+<br/>
+
+![image-20201124104551795](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124104551795.png)
+
+<br/>
+
+![image-20201124104559964](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124104559964.png)
+
+<br/>
+
+![image-20201124105027883](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124105027883.png)
+
+* 마스크에 해당하는 모든 픽셀이 모두 포함되어야지만 해당 픽셀이 포함
+
+<br/>
+
+![image-20201124105128102](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124105128102.png)
+
+<br/>
+
+![image-20201124105222440](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124105222440.png)
+
+* 잡음 제거.
+
+<br/>
+
+![image-20201124105425492](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124105425492.png)
+
+* 객체 내부의 홀(구멍)이 메워짐.
+
+<br/>
+
+![image-20201124105417074](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124105417074.png)
+
+<br/>
+
+![image-20201124105607959](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124105607959.png)
+
+<br/>
+
+![image-20201124105715155](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124105715155.png)
+
+<br/>
+
+![image-20201124105741091](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124105741091.png) 
+
+<br/>
+
+![image-20201124105830158](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124105830158.png)
+
+<br/>
+
+![image-20201124105930117](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124105930117.png)
+
+<br/>
+
+![image-20201124110002736](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124110002736.png)
+
+<br/>
+
+![image-20201124110309399](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124110309399.png)
+
+<br/>
+
+![image-20201124110319213](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124110319213.png)
+
+<br/>
+
+![image-20201124110506427](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124110506427.png)
+
+* 그렇게 많이 사용되진 않아요.
+* 그레이 스케일에 굳이 이렇게 하지는...
+
+<br/>
+
+![image-20201124110632170](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124110632170.png)
+
+<br/>
+
+![image-20201124110643307](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124110643307.png)
+
+<br/>
+
+
+

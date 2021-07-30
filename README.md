@@ -2557,7 +2557,7 @@ cv2.destroyAllWindows()
 
 
 
-![image-20201020092107923](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201020092107923.png)
+![image-20201020092107923](./img/image-20201020092107923.png)
 
 <br/>
 
@@ -2594,7 +2594,7 @@ cv2.destroyAllWindows()
     * cv2.ADAPTIVE_THRESH_MEAN_C: 이웃 픽셀의 평균으로 결정
     * cv2.ADAPTIVE_THRESH_GAUSSIAN_C: 가우시안 분포에 따른 가중치의 합으로 결정
 
-![image-20201020093551171](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201020093551171.png)
+![image-20201020093551171](./img/image-20201020093551171.png)
 
 
 
@@ -2683,11 +2683,11 @@ cv2.destroyAllWindows()
 
 ### 4.4 이미지 연산
 
-![image-20201020102348410](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201020102348410.png)
+![image-20201020102348410](./img/image-20201020102348410.png)
 
 <br/>
 
-![image-20201020104230604](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201020104230604.png)
+![image-20201020104230604](./img/image-20201020104230604.png)
 
 <br/>
 
@@ -2851,7 +2851,7 @@ cv2.destroyAllWindows()
 
 <br/>
 
-![image-20201110092236153](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110092236153.png)
+![image-20201110092236153](./img/image-20201110092236153.png)
 
 * 픽셀 좌표가 이동한다 → 물체 모양이 변형된다
 * 워핑(Warping) 픽셀별로 이동이 바뀌는 거. 오른쪽 개 스마일로 만들기..
@@ -2860,21 +2860,21 @@ cv2.destroyAllWindows()
 
 <br/>
 
-![image-20201110092347298](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110092347298.png)
+![image-20201110092347298](./img/image-20201110092347298.png)
 
 * 원 형상에서 목적영상으로 : 전방향, 순방향 forward.
 * 거꾸로 역매핑 : 역방향 backward 사상.
 
 <br/>
 
-![image-20201110092518022](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110092518022.png)
+![image-20201110092518022](./img/image-20201110092518022.png)
 
 * 오버랩 : 다른 두 영상이 하나의 목적지로 겹치는거
 * 홀 : 목적지에 영상이 도착하지 않는거
 
 <br/>
 
-![image-20201110092647943](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110092647943.png)
+![image-20201110092647943](./img/image-20201110092647943.png)
 
 * 오버랩의 경우, 축소할 때 많이 생긴다.
   * (x/2, y/2)에 매핑될 때 짝수인 경우는 너무 잘 된다.
@@ -2890,7 +2890,7 @@ cv2.destroyAllWindows()
 
 <br/>
 
-![image-20201110093136651](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110093136651.png)
+![image-20201110093136651](./img/image-20201110093136651.png)
 
 * 이를 해결하기 위해 역방향 사상을 사용!
 * 병합이 일어나지 않는다.
@@ -2900,87 +2900,87 @@ cv2.destroyAllWindows()
 
 <br/>
 
-![image-20201110093326404](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110093326404.png)
+![image-20201110093326404](./img/image-20201110093326404.png)
 
 * 오차가 클 수도 있는데, 이것을 최소화하기 위해서. 좋은 품질 영상을 만들기 위해!!
 
 <br/>
 
-![image-20201110093403443](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110093403443.png)
+![image-20201110093403443](./img/image-20201110093403443.png)
 
 * 가장 인접한 이웃 화소 보간법
   * 알고리즘은 단순한 대신 해상도는 떨어져보인다.
 
 <br/>
 
-![image-20201110093447890](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110093447890.png)
+![image-20201110093447890](./img/image-20201110093447890.png)
 
 * 뭉툭함 발생!
 
 <br/>
 
-![image-20201110093519733](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110093519733.png)
+![image-20201110093519733](./img/image-20201110093519733.png)
 
 * 히스토그램하고 똑같다. 식이 똑같다. 그래프 구하는거.
 * 대신 이미지는 2차원 평면이기 때문에 저 식 하나로 끝나진 않아..
 
 <br/>
 
-![image-20201110093721293](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110093721293.png)
+![image-20201110093721293](./img/image-20201110093721293.png)
 
 * **질문! 화소값 이라고 하면 해당 이미지가 뭐냐에 따라서 BGR 세 가지 색 일 수도 있고, HSV 밝기 일 수도 있고, Grayscale이어서 명암일 수도 있고 한거죠?**
 * **그럼 그 값에 대해서 자연스러운 연결처럼 보이기 위해 중간값(?)을 넣는거다 라고 생각하면 되나요?**
 
 <br/>
 
-![image-20201110094001468](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110094001468.png)
+![image-20201110094001468](./img/image-20201110094001468.png)
 
 * 식... 뭐야... 어떻게 해야.... 무으ㅓ어어ㅓ
 
 <br/>
 
-![image-20201110094020203](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110094020203.png)
+![image-20201110094020203](./img/image-20201110094020203.png)
 
 * 더 부드러운 이미지를 얻을 수는 있지만, 많은 계산량이 소모된다!
 
 <br/>
 
-![image-20201110094130653](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110094130653.png)
+![image-20201110094130653](./img/image-20201110094130653.png)
 
 * 정방향을 역방향으로 고친다.
 * ...
 
 <br/>
 
-![image-20201110094414159](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110094414159.png)
+![image-20201110094414159](./img/image-20201110094414159.png)
 
 * 2배 축소. 축당 2배. 라고 하니까.. 면적은 4배가 된다. 단어 표현 주의 ㅋㅋ
 
 <br/>
 
-![image-20201110094446912](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110094446912.png)
+![image-20201110094446912](./img/image-20201110094446912.png)
 
 <br/>
 
-![image-20201110094633978](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110094633978.png)
+![image-20201110094633978](./img/image-20201110094633978.png)
 
 <br/>
 
-![image-20201110095143263](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110095143263.png)
+![image-20201110095143263](./img/image-20201110095143263.png)
 
 <br/>
 
-![image-20201110095419654](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110095419654.png)
+![image-20201110095419654](./img/image-20201110095419654.png)
 
 * 중심 회전을 한것!
 
 <br/>
 
-![image-20201110095412424](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110095412424.png)
+![image-20201110095412424](./img/image-20201110095412424.png)
 
 <br/>
 
-![image-20201110095455896](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110095455896.png)
+![image-20201110095455896](./img/image-20201110095455896.png)
 
 * 순방향
 * 역방향
@@ -2988,7 +2988,7 @@ cv2.destroyAllWindows()
 
 <br/>
 
-![image-20201110095553688](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110095553688.png)
+![image-20201110095553688](./img/image-20201110095553688.png)
 
 <br/>
 
@@ -2996,7 +2996,7 @@ cv2.destroyAllWindows()
 
 #### 이동 변환의 경우?
 
-![image-20201110102705376](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110102705376.png)
+![image-20201110102705376](./img/image-20201110102705376.png)
 
 * 우리는 변환행렬만 알면 된다!!
 
@@ -3008,7 +3008,7 @@ cv2.destroyAllWindows()
 
 #### 확대 축소의 경우?
 
-![image-20201110104307458](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110104307458.png)
+![image-20201110104307458](./img/image-20201110104307458.png)
 
 * 마찬가지 우리는 변환행렬만 알면 된다
 
@@ -3016,7 +3016,7 @@ cv2.destroyAllWindows()
 
 #### 회전 변환의 경우?
 
-![image-20201110110940057](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201110110940057.png)
+![image-20201110110940057](./img/image-20201110110940057.png)
 
 * 코마사사코
 
@@ -3036,7 +3036,7 @@ cv2.destroyAllWindows()
 
 ## Chapter 6. 영상필터
 
-![image-20201117103717873](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201117103717873.png)
+![image-20201117103717873](./img/image-20201117103717873.png)
 
 원래는 세 단원으로 구분해야 합니다...
 
@@ -3046,32 +3046,32 @@ cv2.destroyAllWindows()
 
 <br/>
 
-![image-20201117103730864](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201117103730864.png)
+![image-20201117103730864](./img/image-20201117103730864.png)
 
 * 주파수 도메인. 생략합니다.
 
 <br/>
 
-![image-20201117104237231](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201117104237231.png)
+![image-20201117104237231](./img/image-20201117104237231.png)
 
 * 기본적으로 중첩 포문 여러개로 연산한다.
 * 각 좌표끼리 곱해서 다 더한 값인 g(x, y)를  f(x,y)에다가 대신 넣어준다~ 라고 합니다...
 
 <br/>
 
-![image-20201117104502648](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201117104502648.png)
+![image-20201117104502648](./img/image-20201117104502648.png)
 
 * 위와 같은 3x3 크기의 형식의 마스크를 하는 필터는 세 개가 있다고 한다.
 
 <br/>
 
-![image-20201117105648604](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201117105648604.png)
+![image-20201117105648604](./img/image-20201117105648604.png)
 
 * 뭐 이런것도 있대!
 
 <br/>
 
-![image-20201117104842942](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201117104842942.png)
+![image-20201117104842942](./img/image-20201117104842942.png)
 
 * 경계 처리!! 기본적으로는 4가지가 있는데, 여기선 2가지를 제시한다.
 * 최외곽 픽셀은 마스크 연산에서 제외하는 방법
@@ -3086,14 +3086,14 @@ cv2.destroyAllWindows()
 
 <br/>
 
-![image-20201117105015599](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201117105015599.png)
+![image-20201117105015599](./img/image-20201117105015599.png)
 
 * 문제점!!
   * for 뤂을 돌면서 이미 연산한 뒤의 값이 저장된다.
 
 <br/>
 
-![image-20201117105147440](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201117105147440.png)
+![image-20201117105147440](./img/image-20201117105147440.png)
 
 * 노란색 부분은 이미 값이 변했다.
 * 값을 copy 해서 해주어야 한다!!
@@ -3103,33 +3103,33 @@ cv2.destroyAllWindows()
 
 ### 블러링
 
-![image-20201124091130863](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124091130863.png)
+![image-20201124091130863](./img/image-20201124091130863.png)
 
 * 주변 픽셀의 평균 구하는 것
 * 선이 흐릿해지지만, 주변 노이즈는 좀 사라진다.
 
 <br/>
 
-![image-20201124091401975](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124091401975.png)
+![image-20201124091401975](./img/image-20201124091401975.png)
 
 * 마스크를 무작정 키우면 연산 양이 너무 많아진다.
 
 <br/>
 
-![image-20201124091456043](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124091456043.png)
+![image-20201124091456043](./img/image-20201124091456043.png)
 
 * 평균 값 필터에 거리에 대한 가중치를 주어 계산하는 방법.
 * 속도, 성능에 대한 이점
 
 <br/>
 
-![image-20201124091623401](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124091623401.png)
+![image-20201124091623401](./img/image-20201124091623401.png)
 
 * 덜 뭉개지면서 부드럽게 만들어주는게 가중평균 인것이죠.
 
 <br/>
 
-![image-20201124091657142](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124091657142.png)
+![image-20201124091657142](./img/image-20201124091657142.png)
 
 * 덜 인위적으로, 자연스럽게 해준 것이 가우시안 필터
 * 마스크 만들 때 계산량이 많은거지, 한 번 계산해 놓으면 뭐..
@@ -3137,7 +3137,7 @@ cv2.destroyAllWindows()
 
 <br/>
 
-![image-20201124091836333](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124091836333.png)
+![image-20201124091836333](./img/image-20201124091836333.png)
 
 * 대신 마스크 크기가 문제가 된다.
 * 시그마는 표준 편차.
@@ -3148,7 +3148,7 @@ cv2.destroyAllWindows()
 
 <br/>
 
-![image-20201124091957325](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124091957325.png)
+![image-20201124091957325](./img/image-20201124091957325.png)
 
 * 시그마(표준편차)가 커질 수록 마스크의 크기가 커지고, 더 멀리있는 값까지 본다.
 * 따라서 블러링이 아주아주 잘 된다. 많은 블러링을 할 때 쓰는 것
@@ -3157,7 +3157,7 @@ cv2.destroyAllWindows()
 
 ### 샤프링
 
-![image-20201124092104990](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124092104990.png)
+![image-20201124092104990](./img/image-20201124092104990.png)
 
 * 순서대로 원본, 블러링, 원본-블러링, 샤프링
 * 블러링으로 샤프링을 만드는 것을 언샤프 마스크라고 한다.
@@ -3167,7 +3167,7 @@ cv2.destroyAllWindows()
 
 <br/>
 
-![image-20201124092430379](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124092430379.png)
+![image-20201124092430379](./img/image-20201124092430379.png)
 
 * ?? 난 잘 모르겠는데.. 고화질이 아니어서 그런가
 
@@ -3175,30 +3175,30 @@ cv2.destroyAllWindows()
 
 ### 라플라시안 필터
 
-![image-20201124092556881](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124092556881.png)
+![image-20201124092556881](./img/image-20201124092556881.png)
 
-![image-20201124092834586](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124092834586.png)
+![image-20201124092834586](./img/image-20201124092834586.png)
 
 * 라플라시안 필터
   * 원본에서 2차 미분값을 빼준다. 그러면 위의 언샤프와 비슷한 결과를 얻게된다.
 
 <br/>
 
-![image-20201124092845480](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124092845480.png)
+![image-20201124092845480](./img/image-20201124092845480.png)
 
 <br/>
 
-![image-20201124092945784](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124092945784.png)
+![image-20201124092945784](./img/image-20201124092945784.png)
 
 <br/>
 
-![image-20201124093055257](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124093055257.png)
+![image-20201124093055257](./img/image-20201124093055257.png)
 
 * 저걸 다시 빼주면 언샤프 마스킹
 
 <br/>
 
-![image-20201124093125544](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124093125544.png)
+![image-20201124093125544](./img/image-20201124093125544.png)
 
 * 응용한거. 식 전개한거래
 
@@ -3206,7 +3206,7 @@ cv2.destroyAllWindows()
 
 ### 하이부스트 필터
 
-![image-20201124093218894](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124093218894.png)
+![image-20201124093218894](./img/image-20201124093218894.png)
 
 * 하이부스트 필터
   * 이미지가 밝아진다
@@ -3216,31 +3216,31 @@ cv2.destroyAllWindows()
 
 ### 노이즈
 
-![image-20201124093327117](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124093327117.png)
+![image-20201124093327117](./img/image-20201124093327117.png)
 
 * **영상처리는 항상 노이즈 처리가 필요하다.**
 
 <br/>
 
-![image-20201124093724688](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124093724688.png)
+![image-20201124093724688](./img/image-20201124093724688.png)
 
 <br/>
 
-![image-20201124093755632](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124093755632.png)
+![image-20201124093755632](./img/image-20201124093755632.png)
 
 <br/>
 
-![image-20201124093848361](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124093848361.png)
+![image-20201124093848361](./img/image-20201124093848361.png)
 
 * 아날로그에는 있을 수 없고, 디지털에서 존재하는 잡음이다.
 
 <br/>
 
-![image-20201124094010499](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124094010499.png)
+![image-20201124094010499](./img/image-20201124094010499.png)
 
 <br/>
 
-![image-20201124094109021](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124094109021.png)
+![image-20201124094109021](./img/image-20201124094109021.png)
 
 * 대표적인게 미디언 필터!
 * 주변 픽셀들의 값을 오름 또는 내림 차순으로 정렬하여 중앙값으로 대체!
@@ -3251,29 +3251,29 @@ cv2.destroyAllWindows()
 
 <br/>
 
-![image-20201124094415187](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124094415187.png)
+![image-20201124094415187](./img/image-20201124094415187.png)
 
 <br/>
 
 ### 마스크를 이용한 엣지 검출
 
-![image-20201124101039085](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124101039085.png)
+![image-20201124101039085](./img/image-20201124101039085.png)
 
 <br/>
 
-![image-20201124101144423](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124101144423.png)
+![image-20201124101144423](./img/image-20201124101144423.png)
 
 * 변곡점이 되는 부분만 검출이 되는 것
 
 <br/>
 
-![image-20201124101300721](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124101300721.png)
+![image-20201124101300721](./img/image-20201124101300721.png)
 
 * 마스크를 어떻게 구성하느냐에 따라서 여러 알고리즘이 나온다!
 
 <br/>
 
-![image-20201124101605472](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124101605472.png)
+![image-20201124101605472](./img/image-20201124101605472.png)
 
 * 대표적으로 로버츠, 프리윗, 소벨.
 * 로버츠
@@ -3286,7 +3286,7 @@ cv2.destroyAllWindows()
 
 <br/>
 
-![image-20201124101632910](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124101632910.png)
+![image-20201124101632910](./img/image-20201124101632910.png)
 
 * 위는 좌우, 아래는 위아래
 
@@ -3296,34 +3296,34 @@ cv2.destroyAllWindows()
 
 <br/>
 
-![image-20201124101837659](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124101837659.png)
+![image-20201124101837659](./img/image-20201124101837659.png)
 
 * 이걸 이용해서 전처리나 중요한 정보나... 그래디언트가 사용되는 경우가 많다고 한다.
 
 <br/>
 
-![image-20201124101913212](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124101913212.png)
+![image-20201124101913212](./img/image-20201124101913212.png)
 
 * 위에는 엣지검출
 * 아래는 그걸 다시 바이너리제이션 한 것!
 
 <br/>
 
-![image-20201124102227065](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124102227065.png)
+![image-20201124102227065](./img/image-20201124102227065.png)
 
 <br/>
 
-![image-20201124102241944](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124102241944.png)
+![image-20201124102241944](./img/image-20201124102241944.png)
 
 <br/>
 
-![image-20201124102340666](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124102340666.png)
+![image-20201124102340666](./img/image-20201124102340666.png)
 
 * 엣지들 중에 가장 최댓값만 남겨서 엣지 선에는 한 가지만 가지게?? **질문!**
 
 <br/>
 
-![image-20201124103157831](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124103157831.png)
+![image-20201124103157831](./img/image-20201124103157831.png)
 
 * 한 픽셀에 대해 이 픽셀이 엣지냐 아니냐는 그 픽셀만 가지고 결정되는 것이 아니다!
 * 주변에 아무것도 없으면 엣지가 아니고 그냥 점이지.
@@ -3332,101 +3332,101 @@ cv2.destroyAllWindows()
 
 <br/>
 
-![image-20201124103527921](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124103527921.png)
+![image-20201124103527921](./img/image-20201124103527921.png)
 
 * 케니엣지 쓰면 아주 성능이 좋다
 * 하지만... 속도가... 많이 요구됩니다.
 
 <br/>
 
-![image-20201124103606042](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124103606042.png)
+![image-20201124103606042](./img/image-20201124103606042.png)
 
 <br/>
 
-![image-20201124104006875](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124104006875.png)
+![image-20201124104006875](./img/image-20201124104006875.png)
 
 * 모폴로지에서 이야기하는 픽셀은, 픽셀의 '좌표'를 말한다.
 
 <br/>
 
-![image-20201124104551795](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124104551795.png)
+![image-20201124104551795](./img/image-20201124104551795.png)
 
 <br/>
 
-![image-20201124104559964](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124104559964.png)
+![image-20201124104559964](./img/image-20201124104559964.png)
 
 <br/>
 
-![image-20201124105027883](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124105027883.png)
+![image-20201124105027883](./img/image-20201124105027883.png)
 
 * 마스크에 해당하는 모든 픽셀이 모두 포함되어야지만 해당 픽셀이 포함
 
 <br/>
 
-![image-20201124105128102](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124105128102.png)
+![image-20201124105128102](./img/image-20201124105128102.png)
 
 <br/>
 
-![image-20201124105222440](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124105222440.png)
+![image-20201124105222440](./img/image-20201124105222440.png)
 
 * 잡음 제거.
 
 <br/>
 
-![image-20201124105425492](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124105425492.png)
+![image-20201124105425492](./img/image-20201124105425492.png)
 
 * 객체 내부의 홀(구멍)이 메워짐.
 
 <br/>
 
-![image-20201124105417074](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124105417074.png)
+![image-20201124105417074](./img/image-20201124105417074.png)
 
 <br/>
 
-![image-20201124105607959](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124105607959.png)
+![image-20201124105607959](./img/image-20201124105607959.png)
 
 <br/>
 
-![image-20201124105715155](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124105715155.png)
+![image-20201124105715155](./img/image-20201124105715155.png)
 
 <br/>
 
-![image-20201124105741091](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124105741091.png) 
+![image-20201124105741091](./img/image-20201124105741091.png) 
 
 <br/>
 
-![image-20201124105830158](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124105830158.png)
+![image-20201124105830158](./img/image-20201124105830158.png)
 
 <br/>
 
-![image-20201124105930117](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124105930117.png)
+![image-20201124105930117](./img/image-20201124105930117.png)
 
 <br/>
 
-![image-20201124110002736](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124110002736.png)
+![image-20201124110002736](./img/image-20201124110002736.png)
 
 <br/>
 
-![image-20201124110309399](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124110309399.png)
+![image-20201124110309399](./img/image-20201124110309399.png)
 
 <br/>
 
-![image-20201124110319213](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124110319213.png)
+![image-20201124110319213](./img/image-20201124110319213.png)
 
 <br/>
 
-![image-20201124110506427](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124110506427.png)
+![image-20201124110506427](./img/image-20201124110506427.png)
 
 * 그렇게 많이 사용되진 않아요.
 * 그레이 스케일에 굳이 이렇게 하지는...
 
 <br/>
 
-![image-20201124110632170](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124110632170.png)
+![image-20201124110632170](./img/image-20201124110632170.png)
 
 <br/>
 
-![image-20201124110643307](C:\Users\smpsm\AppData\Roaming\Typora\typora-user-images\image-20201124110643307.png)
+![image-20201124110643307](./img/image-20201124110643307.png)
 
 <br/>
 
